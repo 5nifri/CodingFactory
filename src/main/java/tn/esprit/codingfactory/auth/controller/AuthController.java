@@ -1,5 +1,6 @@
 package tn.esprit.codingfactory.auth.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import tn.esprit.codingfactory.auth.dto.AuthResponse;
 import tn.esprit.codingfactory.auth.dto.LoginRequest;
 import tn.esprit.codingfactory.auth.dto.RegisterRequest;
@@ -30,5 +31,11 @@ public class AuthController {
             @Valid @RequestBody LoginRequest request) {
 
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @GetMapping("/admin-test")
+    @PreAuthorize("hasRole('ADMIN')")
+    public String adminTest() {
+        return "You are an ADMIN";
     }
 }
