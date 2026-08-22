@@ -5,6 +5,7 @@ import tn.esprit.codingfactory.formation.course.repository.CourseRepository;
 import tn.esprit.codingfactory.formation.enrollment.entity.Enrollment;
 import tn.esprit.codingfactory.formation.enrollment.entity.EnrollmentStatus;
 import tn.esprit.codingfactory.formation.enrollment.repository.EnrollmentRepository;
+import tn.esprit.codingfactory.formation.progress.dto.ProgressResponse;
 import tn.esprit.codingfactory.formation.progress.entity.CourseProgress;
 import tn.esprit.codingfactory.formation.progress.repository.CourseProgressRepository;
 import lombok.RequiredArgsConstructor;
@@ -96,5 +97,19 @@ public class CourseProgressService {
         }
 
         return calculateProgress(enrollmentId);
+    }
+
+    @Transactional
+    public ProgressResponse completeCourseAndGetStatus(Long studentId, Long courseId) {
+        CourseProgress progress = completeCourse(studentId, courseId);
+        double formationProgress = calculateProgress(progress.getEnrollment().getId());
+
+        return ProgressResponse.builder()
+                .enrollmentId(progress.getEnrollment().getId())
+                .courseId(progress.getCourse().getId())
+                .courseTitle(progress.getCourse().getTitle())
+                .completed(progress.getCompleted())
+                .formationProgress(formationProgress)
+                .build();
     }
 }

@@ -1,6 +1,6 @@
 package tn.esprit.codingfactory.formation.progress.controller;
 
-import tn.esprit.codingfactory.formation.progress.entity.CourseProgress;
+import tn.esprit.codingfactory.formation.progress.dto.ProgressResponse;
 import tn.esprit.codingfactory.formation.progress.service.CourseProgressService;
 import tn.esprit.codingfactory.user.entity.User;
 import tn.esprit.codingfactory.user.repository.UserRepository;
@@ -18,12 +18,12 @@ public class CourseProgressController {
     private final UserRepository userRepository;
 
     @PostMapping("/courses/{courseId}/complete")
-    public ResponseEntity<CourseProgress> completeCourse(
+    public ResponseEntity<ProgressResponse> completeCourse(
             @PathVariable Long courseId,
             Authentication authentication
     ) {
         User student = currentUser(authentication);
-        return ResponseEntity.ok(progressService.completeCourse(student.getId(), courseId));
+        return ResponseEntity.ok(progressService.completeCourseAndGetStatus(student.getId(), courseId));
     }
 
     @GetMapping("/enrollment/{enrollmentId}")

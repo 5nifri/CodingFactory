@@ -1,10 +1,17 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './auth/login/login.component';
-import { RegisterComponent } from './auth/register/register.component';
+import { Login } from './auth/login/login';
+import { Register } from './auth/register/register';
+import { FormationList } from './formation/formation-list/formation-list';
+import { FormationDetail } from './formation/formation-detail/formation-detail';
+import { Dashboard } from './dashboard/dashboard';
+import { studentGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
-  { path: 'register', component: RegisterComponent },
-  { path: '**', redirectTo: 'login' }
+  { path: '', redirectTo: 'formations', pathMatch: 'full' },
+  { path: 'login', component: Login },
+  { path: 'register', component: Register },
+  { path: 'formations', component: FormationList },
+  { path: 'formations/:id', component: FormationDetail },
+  { path: 'dashboard', component: Dashboard, canActivate: [studentGuard] },
+  { path: '**', redirectTo: 'formations' }
 ];

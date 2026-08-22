@@ -1,6 +1,6 @@
 package tn.esprit.codingfactory.formation.enrollment.controller;
 
-import tn.esprit.codingfactory.formation.enrollment.entity.Enrollment;
+import tn.esprit.codingfactory.formation.enrollment.dto.EnrollmentResponse;
 import tn.esprit.codingfactory.formation.enrollment.service.EnrollmentService;
 import tn.esprit.codingfactory.user.entity.User;
 import tn.esprit.codingfactory.user.repository.UserRepository;
@@ -20,7 +20,7 @@ public class EnrollmentController {
     private final UserRepository userRepository;
 
     @PostMapping("/formation/{formationId}")
-    public ResponseEntity<Enrollment> enroll(
+    public ResponseEntity<EnrollmentResponse> enroll(
             @PathVariable Long formationId,
             Authentication authentication
     ) {
@@ -29,7 +29,7 @@ public class EnrollmentController {
     }
 
     @GetMapping("/my")
-    public ResponseEntity<List<Enrollment>> getMyEnrollments(Authentication authentication) {
+    public ResponseEntity<List<EnrollmentResponse>> getMyEnrollments(Authentication authentication) {
         User student = currentUser(authentication);
         return ResponseEntity.ok(enrollmentService.getMyEnrollments(student.getId()));
     }

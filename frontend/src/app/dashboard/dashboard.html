@@ -1,0 +1,51 @@
+<div class="page-container">
+
+  <h1 class="page-title">My Learning</h1>
+
+  <div *ngIf="loading()" class="center-box">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error()" class="center-box">
+    <p>Could not load your enrollments.</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && enrollments().length === 0" class="center-box">
+    <p>You haven't enrolled in any formation yet.</p>
+    <button mat-raised-button color="primary" routerLink="/formations">Browse Formations</button>
+  </div>
+
+  <div class="enrollment-grid" *ngIf="!loading() && !error()">
+    <mat-card
+      class="enrollment-card"
+      *ngFor="let enrollment of enrollments()"
+      (click)="goToFormation(enrollment.formationId)">
+
+      <mat-card-header>
+        <mat-card-title>{{ enrollment.formationTitle }}</mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-chip-set>
+          <mat-chip [color]="statusColor(enrollment.status)" highlighted>
+            {{ enrollment.status }}
+          </mat-chip>
+        </mat-chip-set>
+
+        <div class="progress-block">
+          <div class="progress-label">
+            <span>Progress</span>
+            <span>{{ enrollment.progress }}%</span>
+          </div>
+          <mat-progress-bar mode="determinate" [value]="enrollment.progress"></mat-progress-bar>
+        </div>
+
+        <p class="enrolled-date">
+          Enrolled on {{ enrollment.enrolledAt | date:'mediumDate' }}
+        </p>
+      </mat-card-content>
+
+    </mat-card>
+  </div>
+
+</div>

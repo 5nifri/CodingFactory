@@ -1,0 +1,59 @@
+<div class="page-container">
+
+  <div *ngIf="loading()" class="center-box">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="error()" class="center-box">
+    <p>Formation not found.</p>
+  </div>
+
+  <div *ngIf="!loading() && !error() && formation() as f" class="detail-layout">
+
+    <img
+      class="hero-image"
+      [src]="f.imageUrl || 'https://placehold.co/900x300?text=Formation'"
+      alt="{{ f.title }}">
+
+    <div class="header-row">
+      <div>
+        <h1>{{ f.title }}</h1>
+        <p class="category">{{ f.categoryName }}</p>
+      </div>
+
+      <button
+        mat-raised-button
+        color="primary"
+        [disabled]="enrolling()"
+        (click)="enroll()">
+        {{ enrolling() ? 'Enrolling...' : 'Enroll Now' }}
+      </button>
+    </div>
+
+    <mat-chip-set class="meta-row">
+      <mat-chip>{{ f.duration }}</mat-chip>
+      <mat-chip>{{ courses().length }} courses</mat-chip>
+      <mat-chip>{{ f.price }} TND</mat-chip>
+    </mat-chip-set>
+
+    <p class="description">{{ f.description }}</p>
+
+    <h2>Course Content</h2>
+
+    <mat-card>
+      <mat-list>
+        <mat-list-item *ngFor="let course of courses()">
+          <mat-icon matListItemIcon>play_circle</mat-icon>
+          <div matListItemTitle>{{ course.orderIndex }}. {{ course.title }}</div>
+          <div matListItemLine>{{ course.duration }}</div>
+        </mat-list-item>
+      </mat-list>
+
+      <p *ngIf="courses().length === 0" class="no-courses">
+        No courses added yet.
+      </p>
+    </mat-card>
+
+  </div>
+
+</div>

@@ -1,10 +1,12 @@
 package tn.esprit.codingfactory.formation.enrollment.service;
 
+import tn.esprit.codingfactory.formation.enrollment.dto.EnrollmentResponse;
 import tn.esprit.codingfactory.formation.enrollment.entity.Enrollment;
 import tn.esprit.codingfactory.formation.enrollment.entity.EnrollmentStatus;
 import tn.esprit.codingfactory.formation.enrollment.repository.EnrollmentRepository;
 import tn.esprit.codingfactory.formation.formation.entity.Formation;
 import tn.esprit.codingfactory.formation.formation.repository.FormationRepository;
+import tn.esprit.codingfactory.formation.progress.service.CourseProgressService;
 import tn.esprit.codingfactory.user.entity.Role;
 import tn.esprit.codingfactory.user.entity.User;
 import tn.esprit.codingfactory.user.repository.UserRepository;
@@ -21,9 +23,10 @@ public class EnrollmentService {
     private final EnrollmentRepository enrollmentRepository;
     private final FormationRepository formationRepository;
     private final UserRepository userRepository;
+    private final CourseProgressService courseProgressService;
 
     @Transactional
-    public Enrollment enroll(Long studentId, Long formationId) {
+    public EnrollmentResponse enroll(Long studentId, Long formationId) {
 
         User student = userRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found"));
@@ -49,11 +52,26 @@ public class EnrollmentService {
                 .status(EnrollmentStatus.ACTIVE)
                 .build();
 
-        return enrollmentRepository.save(enrollment);
+        return toResponse(enrollmentRepository.save(enrollment));
     }
 
     @Transactional(readOnly = true)
-    public List<Enrollment> getMyEnrollments(Long studentId) {
-        return enrollmentRepository.findByStudentId(studentId);
+    public List<EnrollmentResponse> getMyEnrollments(Long studentId) {
+        return enrollmentRepository.findByStudentId(studentId).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    private EnrollmentResponse toResponse(Enrollment e) {
+        double progress = courseProgressService.calculateProgress(e.getId());
+
+        return EnrollmentResponse.builder()
+                .id(e.getId())
+                .formationId(e.getFormation().getId())
+                .formationTitle(e.getFormation().getTitle())
+                .enrolledAt(e.getEnrolledAt())
+                .status(e.getStatus())
+                .progress(progress)
+                .build();
     }
 }

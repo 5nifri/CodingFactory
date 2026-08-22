@@ -1,0 +1,52 @@
+.page-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+.center-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.hero-image {
+  width: 100%;
+  border-radius: 8px;
+  max-height: 300px;
+  object-fit: cover;
+  margin-bottom: 16px;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 16px;
+
+  h1 {
+    margin: 0 0 4px 0;
+  }
+
+  .category {
+    color: rgba(0, 0, 0, 0.6);
+    margin: 0;
+  }
+}
+
+.meta-row {
+  margin-bottom: 16px;
+}
+
+.description {
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.no-courses {
+  padding: 16px;
+  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+}
