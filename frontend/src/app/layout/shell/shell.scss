@@ -1,0 +1,59 @@
+.app-shell {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 8px;
+  background: #0f2744;
+  color: #fff;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+  margin-right: 12px;
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nav a {
+  color: #fff;
+}
+
+.nav a.active {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.user {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  margin-right: 8px;
+}
+
+.content {
+  flex: 1;
+}
+
+.footer {
+  padding: 16px;
+  text-align: center;
+  color: rgba(0, 0, 0, 0.55);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}

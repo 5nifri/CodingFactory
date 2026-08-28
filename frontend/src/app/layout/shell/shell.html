@@ -1,0 +1,42 @@
+<div class="app-shell">
+  <mat-toolbar class="topbar">
+    <a routerLink="/" class="brand">
+      <mat-icon>factory</mat-icon>
+      <span>Coding Factory</span>
+    </a>
+
+    <nav class="nav">
+      <a mat-button routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a mat-button routerLink="/consulting" routerLinkActive="active">Consulting</a>
+      <a mat-button routerLink="/formations" routerLinkActive="active">Formations</a>
+      @if (auth.isLoggedIn()) {
+        <a mat-button routerLink="/my-requests" routerLinkActive="active">My requests</a>
+      }
+      @if (auth.isStudent()) {
+        <a mat-button routerLink="/dashboard" routerLinkActive="active">My learning</a>
+      }
+      @if (auth.isAdmin()) {
+        <a mat-button routerLink="/admin/offers" routerLinkActive="active">Manage offers</a>
+        <a mat-button routerLink="/admin/requests" routerLinkActive="active">Manage requests</a>
+      }
+    </nav>
+
+    <span class="spacer"></span>
+
+    @if (auth.isLoggedIn()) {
+      <span class="user">{{ auth.getEmail() }}</span>
+      <button mat-stroked-button (click)="auth.logout()">Logout</button>
+    } @else {
+      <a mat-button routerLink="/login">Login</a>
+      <a mat-flat-button routerLink="/register">Register</a>
+    }
+  </mat-toolbar>
+
+  <main class="content">
+    <router-outlet />
+  </main>
+
+  <footer class="footer">
+    Coding Factory — consulting offers and consultation requests
+  </footer>
+</div>

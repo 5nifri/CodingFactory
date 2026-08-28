@@ -1,42 +1,63 @@
-<div class="auth-container">
-	<mat-card class="auth-card">
-		<mat-card-header>
-			<mat-card-title>Create an account</mat-card-title>
-		</mat-card-header>
-
-		<mat-card-content>
-			<form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-
-				<mat-form-field appearance="outline" class="full-width">
-					<mat-label>First name</mat-label>
-					<input matInput name="firstName" [(ngModel)]="firstName" required>
-				</mat-form-field>
-
-				<mat-form-field appearance="outline" class="full-width">
-					<mat-label>Last name</mat-label>
-					<input matInput name="lastName" [(ngModel)]="lastName" required>
-				</mat-form-field>
-
-				<mat-form-field appearance="outline" class="full-width">
-					<mat-label>Email</mat-label>
-					<input matInput type="email" name="email" [(ngModel)]="email" required>
-				</mat-form-field>
-
-				<mat-form-field appearance="outline" class="full-width">
-					<mat-label>Password</mat-label>
-					<input matInput type="password" name="password" [(ngModel)]="password" required minlength="6">
-				</mat-form-field>
-
-				<button mat-raised-button color="primary" type="submit"
-								class="full-width" [disabled]="loading">
-					{{ loading ? 'Creating account...' : 'Register' }}
-				</button>
-
-			</form>
-
-			<p class="switch-link">
-				Already have an account? <a routerLink="/login">Login</a>
-			</p>
-		</mat-card-content>
-	</mat-card>
+<div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+  <div class="container position-relative">
+    <h1>Inscription</h1>
+    <p>Créez votre compte CodingFactory</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a routerLink="/">Home</a></li>
+        <li class="current">Inscription</li>
+      </ol>
+    </nav>
+  </div>
 </div>
+
+<section class="contact section">
+  <div class="container" data-aos="fade-up">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+
+        <div class="section-title">
+          <h2>S'inscrire</h2>
+          <p>Rejoignez CodingFactory</p>
+        </div>
+
+        @if (error) {
+          <div class="alert alert-danger">{{ error }}</div>
+        }
+
+        <form (ngSubmit)="onSubmit()" class="php-email-form">
+          <div class="row gy-3">
+            <div class="col-md-6">
+              <input class="form-control" name="firstName"
+                     [(ngModel)]="firstName" placeholder="Prénom" required>
+            </div>
+            <div class="col-md-6">
+              <input class="form-control" name="lastName"
+                     [(ngModel)]="lastName" placeholder="Nom" required>
+            </div>
+            <div class="col-12">
+              <input class="form-control" type="email" name="email"
+                     [(ngModel)]="email" placeholder="Email" required>
+            </div>
+            <div class="col-12">
+              <input class="form-control" type="password" name="password"
+                     [(ngModel)]="password" placeholder="Mot de passe" required minlength="6">
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <button type="submit" [disabled]="loading">
+              {{ loading ? 'Inscription...' : "S'inscrire" }}
+            </button>
+          </div>
+        </form>
+
+        <p class="text-center mt-4">
+          Déjà un compte ?
+          <a routerLink="/login">Se connecter</a>
+        </p>
+
+      </div>
+    </div>
+  </div>
+</section>

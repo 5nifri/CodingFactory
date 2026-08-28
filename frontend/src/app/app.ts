@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+declare var AOS: any;
+declare var PureCounter: any;
 
 @Component({
   selector: 'app-root',
@@ -8,6 +11,14 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  title = 'frontend';
+export class App implements AfterViewInit {
+
+  ngAfterViewInit(): void {
+    setTimeout(() => {
+      const w = window as any;
+      if (typeof w.initDewiTemplate === 'function') {
+        w.initDewiTemplate();
+      }
+    }, 300);
+  }
 }

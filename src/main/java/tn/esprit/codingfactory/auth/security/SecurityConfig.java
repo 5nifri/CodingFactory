@@ -53,6 +53,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/progress/**").hasRole("STUDENT")
                         .requestMatchers(HttpMethod.GET, "/api/progress/**").hasRole("STUDENT")
 
+                                // Public browsing of consulting offers
+                                .requestMatchers(HttpMethod.GET, "/api/consulting").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/consulting/{id}").permitAll()
+
+                                // Admin manages offers
+                                .requestMatchers(HttpMethod.POST, "/api/consulting").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/consulting/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/consulting/**").hasRole("ADMIN")
+
+                                // Any authenticated user (STUDENT or ADMIN) can submit/view own requests
+                                .requestMatchers(HttpMethod.POST, "/api/consulting-requests").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/api/consulting-requests/my").authenticated()
+
+                                // Admin only: view all requests, change status
+                                .requestMatchers(HttpMethod.GET, "/api/consulting-requests").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/consulting-requests/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
 

@@ -1,0 +1,61 @@
+<!-- Page Title -->
+<div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+  <div class="container position-relative">
+    <h1>E-Formation Hub</h1>
+    <p>Formations professionnelles en ligne et en présentiel</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a routerLink="/">Home</a></li>
+        <li class="current">E-Formation Hub</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- Formations Section -->
+<section id="formations" class="portfolio section">
+
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Nos Formations</h2>
+    <p>Découvrez notre catalogue de formations</p>
+  </div>
+
+  <div class="container">
+
+    @if (loading()) {
+      <p class="text-center">Chargement des formations...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (!loading() && !error() && formations().length === 0) {
+      <p class="text-center">Aucune formation disponible</p>
+    }
+
+    <div class="row gy-4">
+      @for (formation of formations(); track formation.id) {
+        <div class="col-lg-4 col-md-6" data-aos="fade-up">
+          <div class="portfolio-content h-100">
+            <img [src]="getImage(formation)" class="img-fluid" [alt]="formation.title">
+
+            <div class="portfolio-info">
+              <h4>{{ formation.title }}</h4>
+              <p>{{ formation.description }}</p>
+
+              <div class="d-flex justify-content-between align-items-center mt-2 small">
+                <span>{{ formation.duration }} • {{ formation.totalCourses }} cours</span>
+                <strong>{{ formation.price }} TND</strong>
+              </div>
+
+              <a [routerLink]="['/e-formation', formation.id]" class="details-link" title="Voir les détails">
+                <i class="bi bi-link-45deg"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

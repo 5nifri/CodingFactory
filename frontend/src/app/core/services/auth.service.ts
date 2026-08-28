@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
@@ -11,6 +11,10 @@ export class AuthService {
   private readonly apiUrl = 'http://localhost:8080/api/auth';
   private readonly tokenKey = 'cf_token';
 
+  // Reactive login state, initialized from whatever's in localStorage on app start
+  private _isLoggedIn = signal<boolean>(this.computeIsLoggedIn());
+  readonly isLoggedIn = this._isLoggedIn.asReadonly();
+
   constructor(private http: HttpClient, private router: Router) {}
 
   register(request: RegisterRequest): Observable<any> {
@@ -19,23 +23,21 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
-      tap(response => localStorage.setItem(this.tokenKey, response.token))
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        this._isLoggedIn.set(true);
+      })
     );
   }
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);
+    this._isLoggedIn.set(false);
     this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
-  }
-
-  isLoggedIn(): boolean {
-    const token = this.getToken();
-    if (!token) return false;
-    return !this.isTokenExpired(token);
   }
 
   getDecodedToken(): DecodedToken | null {
@@ -62,6 +64,12 @@ export class AuthService {
 
   isStudent(): boolean {
     return this.getRole() === 'STUDENT';
+  }
+
+  private computeIsLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    return !this.isTokenExpired(token);
   }
 
   private isTokenExpired(token: string): boolean {

@@ -1,0 +1,75 @@
+<!-- Page Title -->
+@if (formation(); as f) {
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+    <div class="container position-relative">
+      <h1>{{ f.title }}</h1>
+      <p>{{ f.categoryName }}</p>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/e-formation">E-Formation Hub</a></li>
+          <li class="current">{{ f.title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+}
+
+<!-- Detail Section -->
+<section class="section">
+  <div class="container" data-aos="fade-up">
+
+    @if (loading()) {
+      <p class="text-center">Chargement...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (formation(); as f) {
+      <div class="row gy-4 align-items-center">
+        <div class="col-lg-6">
+          <img [src]="getImage(f)" class="img-fluid rounded-4 shadow" [alt]="f.title">
+        </div>
+
+        <div class="col-lg-6">
+          <h2 class="mb-3">{{ f.title }}</h2>
+
+          <div class="d-flex flex-wrap gap-2 mb-4">
+            <span class="badge bg-primary fs-6">{{ f.duration }}</span>
+            <span class="badge bg-secondary fs-6">{{ f.totalCourses }} cours</span>
+            <span class="badge bg-success fs-6">{{ f.price }} TND</span>
+          </div>
+
+          <p class="lead">{{ f.description }}</p>
+
+          <button class="btn btn-primary btn-lg mt-3 px-5">
+            <i class="bi bi-pencil-square me-2"></i>
+            S'inscrire à cette formation
+          </button>
+        </div>
+      </div>
+
+      <!-- Programme -->
+      <div class="row mt-5">
+        <div class="col-12">
+          <h3 class="mb-4">Programme de la formation</h3>
+
+          <div class="list-group list-group-flush">
+            @for (course of courses(); track course.orderIndex) {
+              <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                <div>
+                  <span class="badge bg-light text-dark me-2">{{ course.orderIndex }}</span>
+                  <strong>{{ course.title }}</strong>
+                </div>
+                <span class="text-muted">{{ course.duration }}</span>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>
