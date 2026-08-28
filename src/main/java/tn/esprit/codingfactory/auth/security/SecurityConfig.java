@@ -70,6 +70,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, "/api/consulting-requests").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.PUT, "/api/consulting-requests/**").hasRole("ADMIN")
 
+                        .requestMatchers("/uploads/**").permitAll()
+
                         .anyRequest().authenticated()
                 )
 
