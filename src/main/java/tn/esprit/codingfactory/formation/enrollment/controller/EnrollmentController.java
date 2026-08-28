@@ -34,6 +34,16 @@ public class EnrollmentController {
         return ResponseEntity.ok(enrollmentService.getMyEnrollments(student.getId()));
     }
 
+    @DeleteMapping("/formation/{formationId}")
+    public ResponseEntity<Void> unenroll(
+            @PathVariable Long formationId,
+            Authentication authentication
+    ) {
+        User student = currentUser(authentication);
+        enrollmentService.unenroll(student.getId(), formationId);
+        return ResponseEntity.noContent().build();
+    }
+
     private User currentUser(Authentication authentication) {
         return userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));

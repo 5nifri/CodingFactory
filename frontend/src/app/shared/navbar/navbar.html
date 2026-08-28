@@ -12,12 +12,19 @@
         <li><a routerLink="/services" routerLinkActive="active">Services</a></li>
         <li><a routerLink="/consulting" routerLinkActive="active">Consulting Hub</a></li>
         <li><a routerLink="/e-formation" routerLinkActive="active">E-Formation Hub</a></li>
+        @if (isLoggedIn()) {
+          <li><a routerLink="/mes-formations" routerLinkActive="active">Mes Formations</a></li>
+        }
         <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
       </ul>
       <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
     </nav>
 
-    <a class="cta-btn" routerLink="/contact">Get Started</a>
+    @if (isLoggedIn()) {
+      <a class="cta-btn" (click)="logout()" style="cursor: pointer;">Log out</a>
+    } @else {
+      <a class="cta-btn" routerLink="/register">Get Started</a>
+    }
 
   </div>
 </header>

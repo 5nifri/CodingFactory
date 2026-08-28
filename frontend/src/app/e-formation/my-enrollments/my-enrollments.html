@@ -1,0 +1,58 @@
+<div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+  <div class="container position-relative">
+    <h1>Mes Formations</h1>
+    <p>Suivez votre progression</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a routerLink="/">Home</a></li>
+        <li class="current">Mes Formations</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container" data-aos="fade-up">
+
+    @if (loading()) {
+      <p class="text-center">Chargement...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (!loading() && !error() && enrollments().length === 0) {
+      <p class="text-center">Vous n'êtes inscrit à aucune formation. <a routerLink="/e-formation">Découvrir le catalogue</a></p>
+    }
+
+    <div class="row gy-4">
+      @for (enrollment of enrollments(); track enrollment.id) {
+        <div class="col-lg-6">
+          <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h4>{{ enrollment.formationTitle }}</h4>
+              @if (enrollment.status === 'COMPLETED') {
+                <span class="badge bg-success">Terminée</span>
+              } @else if (enrollment.status === 'CANCELLED') {
+                <span class="badge bg-secondary">Annulée</span>
+              } @else {
+                <span class="badge bg-primary">En cours</span>
+              }
+            </div>
+
+            <div class="progress mb-2" style="height: 8px;">
+              <div class="progress-bar" role="progressbar" [style.width.%]="enrollment.progress"></div>
+            </div>
+            <small class="text-muted mb-3">{{ enrollment.progress }}% complété</small>
+
+            <a [routerLink]="['/e-formation', enrollment.formationId]" class="btn btn-outline-primary mt-2 align-self-start">
+              Voir la formation
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>

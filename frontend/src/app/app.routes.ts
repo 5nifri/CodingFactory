@@ -6,6 +6,8 @@ import { EFormationHome } from './e-formation/e-formation-home/e-formation-home'
 import { FormationDetail } from './e-formation/formation-detail/formation-detail';
 import {Login} from './auth/login/login';
 import {Register} from './auth/register/register';
+import { studentGuard } from './core/guards/role.guard';
+import { MyEnrollments } from './e-formation/my-enrollments/my-enrollments'
 
 
 export const routes: Routes = [
@@ -19,6 +21,7 @@ export const routes: Routes = [
       { path: 'register', component: Register },
       { path: 'e-formation', component: EFormationHome },
       { path: 'e-formation/:id', component: FormationDetail },
+      { path: 'mes-formations', component: MyEnrollments, canActivate: [studentGuard] },
       // On ajoutera about, services, contact plus tard si besoin
     ]
   },

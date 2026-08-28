@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -42,8 +43,19 @@ public class EnrollmentService {
             throw new RuntimeException("This formation is not available");
         }
 
-        if (enrollmentRepository.existsByStudentIdAndFormationId(studentId, formationId)) {
-            throw new RuntimeException("Already enrolled in this formation");
+        Optional<Enrollment> existing =
+                enrollmentRepository.findByStudentIdAndFormationId(studentId, formationId);
+
+        if (existing.isPresent()) {
+            Enrollment enrollment = existing.get();
+
+            if (enrollment.getStatus() == EnrollmentStatus.ACTIVE) {
+                throw new RuntimeException("Already enrolled in this formation");
+            }
+
+            // Re-activate a previously cancelled enrollment
+            enrollment.setStatus(EnrollmentStatus.ACTIVE);
+            return toResponse(enrollmentRepository.save(enrollment));
         }
 
         Enrollment enrollment = Enrollment.builder()
@@ -53,6 +65,19 @@ public class EnrollmentService {
                 .build();
 
         return toResponse(enrollmentRepository.save(enrollment));
+    }
+
+    @Transactional
+    public void unenroll(Long studentId, Long formationId) {
+        Enrollment enrollment = enrollmentRepository.findByStudentIdAndFormationId(studentId, formationId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        if (enrollment.getStatus() != EnrollmentStatus.ACTIVE) {
+            throw new RuntimeException("This enrollment is not active");
+        }
+
+        enrollment.setStatus(EnrollmentStatus.CANCELLED);
+        enrollmentRepository.save(enrollment);
     }
 
     @Transactional(readOnly = true)
