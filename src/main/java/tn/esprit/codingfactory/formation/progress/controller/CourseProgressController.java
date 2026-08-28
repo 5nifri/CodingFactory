@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/progress")
 @RequiredArgsConstructor
@@ -38,5 +40,16 @@ public class CourseProgressController {
     private User currentUser(Authentication authentication) {
         return userRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @GetMapping("/enrollment/{enrollmentId}/completed")
+    public ResponseEntity<List<Long>> getCompletedCourseIds(
+            @PathVariable Long enrollmentId,
+            Authentication authentication
+    ) {
+        User student = currentUser(authentication);
+        return ResponseEntity.ok(
+                progressService.getCompletedCourseIds(student.getId(), enrollmentId)
+        );
     }
 }

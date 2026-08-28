@@ -8,7 +8,7 @@ import {Login} from './auth/login/login';
 import {Register} from './auth/register/register';
 import { studentGuard } from './core/guards/role.guard';
 import { MyEnrollments } from './e-formation/my-enrollments/my-enrollments'
-
+import { CourseView } from './e-formation/course-view/course-view';
 
 export const routes: Routes = [
   {
@@ -22,6 +22,7 @@ export const routes: Routes = [
       { path: 'e-formation', component: EFormationHome },
       { path: 'e-formation/:id', component: FormationDetail },
       { path: 'mes-formations', component: MyEnrollments, canActivate: [studentGuard] },
+      { path: 'e-formation/:formationId/courses/:courseId', component: CourseView, canActivate: [studentGuard] },
       // On ajoutera about, services, contact plus tard si besoin
     ]
   },

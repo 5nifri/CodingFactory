@@ -104,23 +104,10 @@
                     <span class="text-muted small">{{ course.duration }}</span>
 
                     @if (isEnrolled() || isCompleted()) {
-                      @if (course.videoUrl) {
-                        <a [href]="course.videoUrl" target="_blank" rel="noopener"
-                           class="btn btn-sm btn-outline-primary"
-                           [class.disabled]="completingCourseId() === course.id"
-                           (click)="onConsultCourse(course)">
-                          <i class="bi bi-play-circle"></i>
-                          {{ completingCourseId() === course.id ? '...' : 'Consulter' }}
-                        </a>
-                      }
-                      @if (course.materialUrl) {
-                        <a [href]="course.materialUrl" target="_blank" rel="noopener"
-                           class="btn btn-sm btn-outline-secondary"
-                           [class.disabled]="completingCourseId() === course.id"
-                           (click)="onConsultCourse(course)">
-                          <i class="bi bi-file-earmark-text"></i> Support
-                        </a>
-                      }
+                      <a [routerLink]="['/e-formation', formationId(), 'courses', course.id]"
+                         class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-play-circle"></i> Consulter
+                      </a>
                     }
                   </div>
                 </div>

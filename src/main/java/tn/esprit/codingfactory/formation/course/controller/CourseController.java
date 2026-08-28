@@ -37,4 +37,6 @@ public class CourseController {
         courseService.delete(courseId);
         return ResponseEntity.noContent().build();
     }
+
+
 }

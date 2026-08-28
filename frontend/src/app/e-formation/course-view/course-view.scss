@@ -1,0 +1,17 @@
+.video-wrapper {
+  background: #000;
+
+  video {
+    display: block;
+  }
+}
+
+.sticky-top {
+  z-index: 10;
+}
+
+.list-group-item.active {
+  background-color: var(--bs-primary);
+  border-color: var(--bs-primary);
+  color: #fff;
+}

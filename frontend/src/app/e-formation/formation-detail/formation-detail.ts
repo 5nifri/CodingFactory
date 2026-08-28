@@ -25,7 +25,7 @@ export class FormationDetail {
   authService = inject(AuthService);
   fallbackImage = 'assets/img/portfolio/app-1.jpg';
 
-  private formationId = toSignal(
+  formationId = toSignal(
     this.route.paramMap.pipe(map(params => Number(params.get('id')))),
     { initialValue: 0 }
   );

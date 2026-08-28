@@ -13,4 +13,6 @@ public interface CourseProgressRepository extends JpaRepository<CourseProgress, 
     List<CourseProgress> findByEnrollmentId(Long enrollmentId);
 
     long countByEnrollmentIdAndCompletedTrue(Long enrollmentId);
+
+    List<CourseProgress> findByEnrollmentIdAndCompletedTrue(Long enrollmentId);
 }

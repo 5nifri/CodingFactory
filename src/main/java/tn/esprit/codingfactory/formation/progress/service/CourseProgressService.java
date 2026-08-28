@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -111,5 +112,21 @@ public class CourseProgressService {
                 .completed(progress.getCompleted())
                 .formationProgress(formationProgress)
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Long> getCompletedCourseIds(Long studentId, Long enrollmentId) {
+
+        Enrollment enrollment = enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new RuntimeException("Enrollment not found"));
+
+        if (!enrollment.getStudent().getId().equals(studentId)) {
+            throw new RuntimeException("You cannot access this enrollment");
+        }
+
+        return progressRepository.findByEnrollmentIdAndCompletedTrue(enrollmentId)
+                .stream()
+                .map(cp -> cp.getCourse().getId())
+                .toList();
     }
 }
