@@ -36,24 +36,37 @@
           <div class="card p-4">
             <h4 class="mb-3">Demander ce consulting</h4>
 
-            @if (submitted()) {
-              <div class="alert alert-success">
-                Votre demande a été envoyée. Nous vous contacterons bientôt.
-              </div>
-            } @else {
-              <textarea class="form-control mb-3" rows="5"
-                        placeholder="Décrivez votre besoin..."
-                        [ngModel]="message()"
-                        (ngModelChange)="message.set($event)"
-                        name="message"></textarea>
+            @if (existingRequestChecked()) {
+              @if (existingRequest(); as req) {
+                <div class="alert alert-info">
+                  <p class="mb-2">Vous avez déjà envoyé une demande pour cette offre.</p>
 
-              @if (submitError()) {
-                <p class="text-danger small">{{ submitError() }}</p>
+                  @switch (req.status) {
+                    @case ('PENDING') { <span class="badge bg-warning text-dark">En attente</span> }
+                    @case ('ACCEPTED') { <span class="badge bg-primary">Acceptée</span> }
+                    @case ('REJECTED') { <span class="badge bg-danger">Refusée</span> }
+                    @case ('COMPLETED') { <span class="badge bg-success">Terminée</span> }
+                  }
+
+                  <p class="small text-muted mt-2 mb-0">
+                    Envoyée le {{ req.createdAt | date:'dd/MM/yyyy' }}
+                  </p>
+                </div>
+              } @else {
+                <textarea class="form-control mb-3" rows="5"
+                          placeholder="Décrivez votre besoin..."
+                          [ngModel]="message()"
+                          (ngModelChange)="message.set($event)"
+                          name="message"></textarea>
+
+                @if (submitError()) {
+                  <p class="text-danger small">{{ submitError() }}</p>
+                }
+
+                <button class="btn btn-primary" [disabled]="submitting() || !message().trim()" (click)="onSubmit()">
+                  {{ submitting() ? 'Envoi...' : 'Envoyer la demande' }}
+                </button>
               }
-
-              <button class="btn btn-primary" [disabled]="submitting() || !message().trim()" (click)="onSubmit()">
-                {{ submitting() ? 'Envoi...' : 'Envoyer la demande' }}
-              </button>
             }
           </div>
         </div>

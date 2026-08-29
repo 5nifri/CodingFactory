@@ -33,9 +33,11 @@ export class Login {
       next: () => {
         this.loading = false;
         if (this.authService.isAdmin()) {
-          this.router.navigate(['/admin/formations']);
+          // Admins aren't expected to log in here — this is just a safety
+          // net that sends them to the real admin app instead of /e-formation.
+          window.location.href = 'http://localhost:4201';
         } else {
-          this.router.navigate(['/e-formation']);
+          this.router.navigate(['/']);
         }
       },
       error: () => {
