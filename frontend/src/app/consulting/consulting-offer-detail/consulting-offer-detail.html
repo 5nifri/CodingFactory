@@ -1,0 +1,64 @@
+@if (offer(); as o) {
+  <div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+    <div class="container position-relative">
+      <h1>{{ o.title }}</h1>
+      <p>{{ o.category }}</p>
+      <nav class="breadcrumbs">
+        <ol>
+          <li><a routerLink="/">Home</a></li>
+          <li><a routerLink="/consulting">Consulting Hub</a></li>
+          <li class="current">{{ o.title }}</li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+}
+
+<section class="section">
+  <div class="container" data-aos="fade-up">
+
+    @if (loading()) {
+      <p class="text-center">Chargement...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (offer(); as o) {
+      <div class="row gy-4">
+        <div class="col-lg-7">
+          <span class="badge bg-secondary mb-3">{{ o.category }}</span>
+          <p class="lead">{{ o.description }}</p>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="card p-4">
+            <h4 class="mb-3">Demander ce consulting</h4>
+
+            @if (submitted()) {
+              <div class="alert alert-success">
+                Votre demande a été envoyée. Nous vous contacterons bientôt.
+              </div>
+            } @else {
+              <textarea class="form-control mb-3" rows="5"
+                        placeholder="Décrivez votre besoin..."
+                        [ngModel]="message()"
+                        (ngModelChange)="message.set($event)"
+                        name="message"></textarea>
+
+              @if (submitError()) {
+                <p class="text-danger small">{{ submitError() }}</p>
+              }
+
+              <button class="btn btn-primary" [disabled]="submitting() || !message().trim()" (click)="onSubmit()">
+                {{ submitting() ? 'Envoi...' : 'Envoyer la demande' }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

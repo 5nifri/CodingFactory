@@ -1,0 +1,59 @@
+<div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+  <div class="container position-relative">
+    <h1>Mes Demandes</h1>
+    <p>Suivez vos demandes de consulting</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a routerLink="/">Home</a></li>
+        <li class="current">Mes Demandes</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container" data-aos="fade-up">
+
+    @if (loading()) {
+      <p class="text-center">Chargement...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (!loading() && !error() && requests().length === 0) {
+      <p class="text-center">
+        Vous n'avez fait aucune demande.
+        <a routerLink="/consulting">Découvrir nos offres</a>
+      </p>
+    }
+
+    <div class="row gy-4">
+      @for (request of requests(); track request.id) {
+        <div class="col-lg-6">
+          <div class="card p-4">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h4>{{ request.consultingTitle }}</h4>
+
+              @switch (request.status) {
+                @case ('PENDING') { <span class="badge bg-warning text-dark">En attente</span> }
+                @case ('ACCEPTED') { <span class="badge bg-primary">Acceptée</span> }
+                @case ('REJECTED') { <span class="badge bg-danger">Refusée</span> }
+                @case ('COMPLETED') { <span class="badge bg-success">Terminée</span> }
+              }
+            </div>
+
+            <p class="text-muted mb-2">{{ request.message }}</p>
+            <small class="text-muted">Envoyée le {{ request.createdAt | date:'dd/MM/yyyy' }}</small>
+
+            <a [routerLink]="['/consulting', request.consultingId]" class="btn btn-outline-primary btn-sm mt-3 align-self-start">
+              Voir l'offre
+            </a>
+          </div>
+        </div>
+      }
+    </div>
+
+  </div>
+</section>
