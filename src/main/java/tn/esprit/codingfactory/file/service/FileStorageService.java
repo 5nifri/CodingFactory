@@ -1,8 +1,10 @@
 package tn.esprit.codingfactory.file.service;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import tn.esprit.codingfactory.common.exception.ApiException;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -30,13 +32,13 @@ public class FileStorageService {
     public String storeCourseFile(MultipartFile file, String type) {
 
         if (file == null || file.isEmpty()) {
-            throw new RuntimeException("File is empty");
+            throw new ApiException("File is empty", HttpStatus.BAD_REQUEST);
         }
 
         String originalFilename = file.getOriginalFilename();
 
         if (originalFilename == null || !originalFilename.contains(".")) {
-            throw new RuntimeException("Invalid file name");
+            throw new ApiException("Invalid file name", HttpStatus.BAD_REQUEST);
         }
 
         String extension = originalFilename
@@ -48,7 +50,7 @@ public class FileStorageService {
         } else if ("material".equalsIgnoreCase(type)) {
             validateMaterialExtension(extension);
         } else {
-            throw new RuntimeException("Invalid file type. Use 'video' or 'material'");
+            throw new ApiException("Invalid file type. Use 'video' or 'material'", HttpStatus.BAD_REQUEST);
         }
 
         String filename = UUID.randomUUID() + "." + extension;
@@ -60,7 +62,7 @@ public class FileStorageService {
 
         // Security check
         if (!targetLocation.startsWith(uploadDir.resolve("courses"))) {
-            throw new RuntimeException("Invalid file path");
+            throw new ApiException("Invalid file path", HttpStatus.BAD_REQUEST);
         }
 
         try {
@@ -70,27 +72,24 @@ public class FileStorageService {
                     StandardCopyOption.REPLACE_EXISTING
             );
         } catch (IOException e) {
-            throw new RuntimeException("Could not store file", e);
+            throw new ApiException("Could not store file", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return "/uploads/courses/" + filename;
     }
 
     private void validateVideoExtension(String extension) {
-
         if (!extension.matches("mp4|webm|mov|avi|mkv")) {
-            throw new RuntimeException(
-                    "Invalid video format. Allowed: mp4, webm, mov, avi, mkv"
+            throw new ApiException(
+                    "Invalid video format. Allowed: mp4, webm, mov, avi, mkv",
+                    HttpStatus.BAD_REQUEST
             );
         }
     }
 
     private void validateMaterialExtension(String extension) {
-
         if (!extension.matches("pdf")) {
-            throw new RuntimeException(
-                    "Invalid material format. Only PDF files are allowed"
-            );
+            throw new ApiException("Invalid material format. Only PDF files are allowed", HttpStatus.BAD_REQUEST);
         }
     }
 }
