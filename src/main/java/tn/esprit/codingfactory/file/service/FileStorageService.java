@@ -24,6 +24,7 @@ public class FileStorageService {
 
         try {
             Files.createDirectories(this.uploadDir.resolve("courses"));
+            Files.createDirectories(this.uploadDir.resolve("formations"));
         } catch (IOException e) {
             throw new RuntimeException("Could not create upload directory", e);
         }
@@ -78,6 +79,56 @@ public class FileStorageService {
         return "/uploads/courses/" + filename;
     }
 
+    /**
+     * Stores a formation cover image under uploads/formations/. Separate
+     * from storeCourseFile since formation images have different extension
+     * rules (image formats, not video/PDF) and a different size profile —
+     * kept as its own method rather than overloading the "type" parameter
+     * pattern used for course files.
+     */
+    public String storeFormationImage(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new ApiException("File is empty", HttpStatus.BAD_REQUEST);
+        }
+
+        String originalFilename = file.getOriginalFilename();
+
+        if (originalFilename == null || !originalFilename.contains(".")) {
+            throw new ApiException("Invalid file name", HttpStatus.BAD_REQUEST);
+        }
+
+        String extension = originalFilename
+                .substring(originalFilename.lastIndexOf(".") + 1)
+                .toLowerCase();
+
+        validateImageExtension(extension);
+
+        String filename = UUID.randomUUID() + "." + extension;
+
+        Path targetLocation = uploadDir
+                .resolve("formations")
+                .resolve(filename)
+                .normalize();
+
+        // Security check
+        if (!targetLocation.startsWith(uploadDir.resolve("formations"))) {
+            throw new ApiException("Invalid file path", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            Files.copy(
+                    file.getInputStream(),
+                    targetLocation,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new ApiException("Could not store file", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return "/uploads/formations/" + filename;
+    }
+
     private void validateVideoExtension(String extension) {
         if (!extension.matches("mp4|webm|mov|avi|mkv")) {
             throw new ApiException(
@@ -90,6 +141,15 @@ public class FileStorageService {
     private void validateMaterialExtension(String extension) {
         if (!extension.matches("pdf")) {
             throw new ApiException("Invalid material format. Only PDF files are allowed", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private void validateImageExtension(String extension) {
+        if (!extension.matches("jpg|jpeg|png|webp")) {
+            throw new ApiException(
+                    "Invalid image format. Allowed: jpg, jpeg, png, webp",
+                    HttpStatus.BAD_REQUEST
+            );
         }
     }
 }

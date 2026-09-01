@@ -12,6 +12,40 @@
   </div>
 </div>
 
+<!-- Recommended For You Section -->
+@if (showRecommendations()) {
+  <section id="recommendations" class="portfolio section" style="padding-bottom: 0;">
+    <div class="container section-title" data-aos="fade-up">
+      <h2>🎯 Recommandé pour vous</h2>
+      <p>Basé sur vos centres d'intérêt et votre parcours</p>
+    </div>
+
+    <div class="container">
+      <div class="row gy-4">
+        @for (rec of recommendations(); track rec.formationId) {
+          <div class="col-lg-4 col-md-6" data-aos="fade-up">
+            <div class="portfolio-content h-100 position-relative">
+              <span class="badge bg-primary position-absolute top-0 end-0 m-3" style="z-index: 2;">
+                {{ matchPercent(rec.matchScore) }}% match
+              </span>
+              <img [src]="getRecommendationImage(rec.imageUrl)" class="img-fluid" [alt]="rec.title">
+
+              <div class="portfolio-info">
+                <h4>{{ rec.title }}</h4>
+                <p class="text-muted small mb-2">{{ rec.categoryName }}</p>
+
+                <a [routerLink]="['/e-formation', rec.formationId]" class="details-link" title="Voir les détails">
+                  <i class="bi bi-link-45deg"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+}
+
 <!-- Formations Section -->
 <section id="formations" class="portfolio section">
 

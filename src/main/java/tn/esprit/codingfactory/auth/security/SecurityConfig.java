@@ -81,10 +81,13 @@ public class SecurityConfig {
 
                         // ==================== FILES ====================
                         .requestMatchers("/uploads/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/files/upload/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/files/upload/**").hasRole("ADMIN")
 
                         .requestMatchers("/error").permitAll()
 
+                        .requestMatchers(HttpMethod.GET, "/api/formations/search").permitAll()
+
+                        .requestMatchers(HttpMethod.GET, "/api/recommendations/**").authenticated()
                         // ==================== DEFAULT ====================
                         .anyRequest().authenticated()
                 )

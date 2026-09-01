@@ -8,6 +8,7 @@ import { EnrollmentService } from '../enrollment.service';
 import { ProgressService } from '../progress.service';
 import { AuthService } from '../../core/services/auth.service';
 import { Formation, Course, Enrollment } from '../formation.model';
+import { resolveFormationImageUrl } from '../../core/utils/image-url.util';
 
 @Component({
   selector: 'app-formation-detail',
@@ -167,6 +168,6 @@ export class FormationDetail {
   }
 
   getImage(formation: Formation): string {
-    return formation.imageUrl || this.fallbackImage;
+    return resolveFormationImageUrl(formation.imageUrl, this.fallbackImage);
   }
 }

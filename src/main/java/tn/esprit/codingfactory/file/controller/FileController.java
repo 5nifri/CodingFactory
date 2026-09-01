@@ -30,4 +30,16 @@ public class FileController {
                 )
         );
     }
+
+    @PostMapping("/upload/formations")
+    public ResponseEntity<Map<String, String>> uploadFormationImage(
+            @RequestParam("file") MultipartFile file
+    ) {
+
+        String fileUrl = fileStorageService.storeFormationImage(file);
+
+        return ResponseEntity.ok(
+                Map.of("url", fileUrl)
+        );
+    }
 }

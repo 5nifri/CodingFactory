@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -32,6 +34,9 @@ public class AuthService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.STUDENT)
                 .enabled(true)
+                .interests(request.getInterests() != null
+                        ? new HashSet<>(request.getInterests())
+                        : new HashSet<>())
                 .build();
 
         userRepository.save(user);

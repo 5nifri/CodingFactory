@@ -1,6 +1,7 @@
 package tn.esprit.codingfactory.formation.category.entity;
 
 import tn.esprit.codingfactory.formation.formation.entity.Formation;
+import tn.esprit.codingfactory.ml.entity.MLCategoryCode;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +31,18 @@ public class Category {
 
     @Column(length = 500)
     private String description;
+
+    /**
+     * Optional link to the fixed ML prediction vocabulary. Null means this
+     * category is not (yet) mapped to an ML label — formations under it
+     * simply won't be surfaced by ML-based recommendations until an admin
+     * sets this field. Multiple Category rows may share the same code
+     * (e.g. an admin could have both "Web Development" and "Backend
+     * Development" both mapped to DEVELOPMENT).
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ml_category_code", length = 30)
+    private MLCategoryCode mlCategoryCode;
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     @Builder.Default
