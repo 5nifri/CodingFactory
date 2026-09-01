@@ -1,8 +1,10 @@
-export interface ConsultingOffer {
+export interface Consulting {
   id: number;
   title: string;
   description: string;
-  category: string;
+  category?: string;
+  image?: string;
+  icon?: string;
 }
 
 export interface ConsultationRequest {

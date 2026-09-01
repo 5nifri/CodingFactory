@@ -10,39 +10,121 @@
     </nav>
   </div>
 </div>
+<!-- Consulting Offers Section -->
+<section id="consulting-services" class="services section">
 
-<section class="section">
-  <div class="container" data-aos="fade-up">
-    <div class="section-title">
-      <h2>Nos Offres de Consulting</h2>
-      <p>Découvrez nos services d'accompagnement</p>
-    </div>
-
-    @if (loading()) {
-      <p class="text-center">Chargement des offres...</p>
-    }
-
-    @if (error()) {
-      <p class="text-center text-danger">{{ error() }}</p>
-    }
-
-    @if (!loading() && !error() && offers().length === 0) {
-      <p class="text-center">Aucune offre disponible</p>
-    }
-
-    <div class="row gy-4">
-      @for (offer of offers(); track offer.id) {
-        <div class="col-lg-4 col-md-6">
-          <div class="portfolio-content h-100 p-4">
-            <span class="badge bg-secondary mb-2">{{ offer.category }}</span>
-            <h4>{{ offer.title }}</h4>
-            <p>{{ offer.description }}</p>
-            <a [routerLink]="['/consulting', offer.id]" class="btn btn-outline-primary btn-sm mt-2">
-              Voir l'offre
-            </a>
-          </div>
-        </div>
-      }
-    </div>
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Nos Offres de Consulting</h2>
+    <p>Découvrez nos services d'accompagnement</p>
   </div>
+
+  @if (loading()) {
+    <div class="container">
+      <p class="text-center">Chargement des offres...</p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="container">
+      <p class="text-center text-danger">{{ error() }}</p>
+    </div>
+  }
+
+  @if (!loading() && !error() && offers().length === 0) {
+    <div class="container">
+      <p class="text-center">Aucune offre disponible</p>
+    </div>
+  }
+
+  @if (!loading() && !error() && offers().length > 0) {
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+      <div class="row gy-5">
+
+        @for (offer of offers(); track offer.id; let i = $index) {
+
+          <div
+            class="col-xl-4 col-md-6"
+            data-aos="zoom-in"
+            [attr.data-aos-delay]="200 + (i * 100)"
+          >
+
+            <div class="service-item">
+
+              <div class="img" [class.img-fallback]="!offer.image">
+                @if (offer.image) {
+                  <img
+                    [src]="resolveImageUrl(offer.image)"
+                    class="img-fluid"
+                    [alt]="offer.title"
+                  >
+                } @else {
+                  <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
+                }
+
+                @if (offer.category) {
+                  <span class="category-ribbon">{{ offer.category }}</span>
+                }
+              </div>
+
+              <div class="details">
+
+                <div class="icon">
+                  <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
+                </div>
+
+                <a
+                  [routerLink]="['/consulting', offer.id]"
+                  class="stretched-link"
+                >
+                  <h3>{{ offer.title }}</h3>
+                </a>
+
+                <p>{{ offer.description }}</p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    </div>
+  }
+
 </section>
+
+<style>
+  .service-item .img {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .img-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #eef2f7, #dde5ee);
+  }
+
+  .img-fallback i {
+    font-size: 3rem;
+    color: #8a97a8;
+  }
+
+  .category-ribbon {
+    position: absolute;
+    top: 16px;
+    left: -34px;
+    transform: rotate(-45deg);
+    background: #d85a30;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 38px;
+    white-space: nowrap;
+  }
+</style>

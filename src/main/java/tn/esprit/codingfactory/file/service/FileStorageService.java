@@ -25,6 +25,7 @@ public class FileStorageService {
         try {
             Files.createDirectories(this.uploadDir.resolve("courses"));
             Files.createDirectories(this.uploadDir.resolve("formations"));
+            Files.createDirectories(this.uploadDir.resolve("consulting"));
         } catch (IOException e) {
             throw new RuntimeException("Could not create upload directory", e);
         }
@@ -151,5 +152,55 @@ public class FileStorageService {
                     HttpStatus.BAD_REQUEST
             );
         }
+    }
+
+    public String storeConsultingImage(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            throw new ApiException("File is empty", HttpStatus.BAD_REQUEST);
+        }
+
+        String originalFilename = file.getOriginalFilename();
+
+        if (originalFilename == null || !originalFilename.contains(".")) {
+            throw new ApiException("Invalid file name", HttpStatus.BAD_REQUEST);
+        }
+
+        String extension = originalFilename
+                .substring(originalFilename.lastIndexOf(".") + 1)
+                .toLowerCase();
+
+        validateImageExtension(extension);
+
+        String filename = UUID.randomUUID() + "." + extension;
+
+        Path consultingDir = uploadDir.resolve("consulting");
+
+        Path targetLocation = consultingDir
+                .resolve(filename)
+                .normalize();
+
+        // Security check
+        if (!targetLocation.startsWith(consultingDir)) {
+            throw new ApiException(
+                    "Invalid file path",
+                    HttpStatus.BAD_REQUEST
+            );
+        }
+
+        try {
+            Files.copy(
+                    file.getInputStream(),
+                    targetLocation,
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (IOException e) {
+            throw new ApiException(
+                    "Could not store file",
+                    HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+
+        return "/uploads/consulting/" + filename;
     }
 }

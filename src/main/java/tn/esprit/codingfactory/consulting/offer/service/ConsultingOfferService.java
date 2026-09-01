@@ -27,6 +27,8 @@ public class ConsultingOfferService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .category(request.getCategory())
+                .image(request.getImage())
+                .icon(request.getIcon())
                 .build();
         return toResponse(consultingRepository.save(consulting));
     }
@@ -51,6 +53,8 @@ public class ConsultingOfferService {
         consulting.setTitle(request.getTitle());
         consulting.setDescription(request.getDescription());
         consulting.setCategory(request.getCategory());
+        consulting.setImage(request.getImage());
+        consulting.setIcon(request.getIcon());
         return toResponse(consultingRepository.save(consulting));
     }
 
@@ -66,11 +70,14 @@ public class ConsultingOfferService {
     }
 
     private ConsultingResponse toResponse(Consulting c) {
+
         return ConsultingResponse.builder()
                 .id(c.getId())
                 .title(c.getTitle())
                 .description(c.getDescription())
                 .category(c.getCategory())
+                .image(c.getImage())
+                .icon(c.getIcon())
                 .build();
     }
 }

@@ -22,7 +22,13 @@ public class Consulting {
     private String description;
 
     @Column(length = 100)
-    private String category; // e.g. "Cloud", "DevOps", "AI" — plain string, no need for a full Category entity here
+    private String category;
+
+    @Column(length = 500)
+    private String image;
+
+    @Column(length = 100)
+    private String icon;
 
     @OneToMany(mappedBy = "consulting", fetch = FetchType.LAZY)
     @Builder.Default

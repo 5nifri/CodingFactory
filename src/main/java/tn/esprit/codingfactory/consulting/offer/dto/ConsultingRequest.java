@@ -1,4 +1,3 @@
-// offer/dto/ConsultingRequest.java  (admin create/update payload)
 package tn.esprit.codingfactory.consulting.offer.dto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -14,4 +13,8 @@ public class ConsultingRequest {
     private String description;
 
     private String category;
+
+    private String image;
+
+    private String icon;
 }

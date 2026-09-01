@@ -1,0 +1,66 @@
+#consulting-services .service-item .img img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+}
+
+#consulting-services .service-item .img-fallback {
+  height: 320px;
+}
+
+#consulting-services .service-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#consulting-services .service-item .details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#consulting-services .service-item .details p {
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Ensures every card in a row stretches to match the tallest one
+#consulting-services .row.gy-5 > [class*='col-'] {
+  display: flex;
+}
+
+#consulting-services .service-item .img {
+  position: relative !important;
+  overflow: hidden !important;
+}
+
+#consulting-services .service-item .img-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eef2f7, #dde5ee);
+}
+
+#consulting-services .service-item .img-fallback i {
+  font-size: 3rem;
+  color: #8a97a8;
+}
+
+#consulting-services .service-item .category-ribbon {
+  position: absolute !important;
+  top: 16px;
+  left: -34px;
+  transform: rotate(-45deg);
+  background: #d85a30;
+  color: #fff !important;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 38px;
+  white-space: nowrap;
+  z-index: 5;
+  display: inline-block;
+}

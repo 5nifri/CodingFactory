@@ -42,4 +42,16 @@ public class FileController {
                 Map.of("url", fileUrl)
         );
     }
+
+    @PostMapping("/upload/consulting")
+    public ResponseEntity<Map<String, String>> uploadConsultingImage(
+            @RequestParam("file") MultipartFile file
+    ) {
+
+        String fileUrl = fileStorageService.storeConsultingImage(file);
+
+        return ResponseEntity.ok(
+                Map.of("url", fileUrl)
+        );
+    }
 }
