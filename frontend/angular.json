@@ -32,6 +32,9 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/bootstrap-icons/font/bootstrap-icons.css",
+              "public/assets/vendor/aos/aos.css",
+              "public/assets/vendor/glightbox/css/glightbox.min.css",
+              "public/assets/vendor/swiper/swiper-bundle.min.css",
               "public/assets/css/main.css",
               "src/styles.scss"
             ],

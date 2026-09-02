@@ -18,5 +18,8 @@ public interface ConsultationRequestRepository extends JpaRepository<Consultatio
 
     List<ConsultationRequest> findByStatus(RequestStatus status);
 
+    @Query("SELECT DISTINCT r FROM ConsultationRequest r JOIN FETCH r.user JOIN FETCH r.consulting WHERE r.consulting.id = :consultingId")
+    List<ConsultationRequest> findByConsultingId(@Param("consultingId") Long consultingId);
+
     boolean existsByConsultingId(Long consultingId);
 }

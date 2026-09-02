@@ -34,6 +34,16 @@ public class ConsultationRequestController {
         return ResponseEntity.ok(requestService.create(user.getId(), dto));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<ConsultationRequestResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(requestService.getById(id));
+    }
+
+    @GetMapping("/by-consulting/{consultingId}")
+    public ResponseEntity<List<ConsultationRequestResponse>> getByConsultingId(@PathVariable Long consultingId) {
+        return ResponseEntity.ok(requestService.getByConsultingId(consultingId));
+    }
+
     @GetMapping("/my")
     public ResponseEntity<List<ConsultationRequestResponse>> getMyRequests(Authentication authentication) {
         User user = currentUser(authentication);

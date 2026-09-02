@@ -67,6 +67,13 @@ public class ConsultationRequestService {
         return toResponse(requestRepository.save(request));
     }
 
+    @Transactional(readOnly = true)
+    public ConsultationRequestResponse getById(Long requestId) {
+        ConsultationRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new ApiException("Request not found", HttpStatus.NOT_FOUND));
+        return toResponse(request);
+    }
+
     private ConsultationRequestResponse toResponse(ConsultationRequest r) {
         return ConsultationRequestResponse.builder()
                 .id(r.getId())
@@ -79,5 +86,14 @@ public class ConsultationRequestService {
                 .createdAt(r.getCreatedAt())
                 .updatedAt(r.getUpdatedAt())
                 .build();
+    }
+
+
+
+    @Transactional(readOnly = true)
+    public List<ConsultationRequestResponse> getByConsultingId(Long consultingId) {
+        return requestRepository.findByConsultingId(consultingId).stream()
+                .map(this::toResponse)
+                .toList();
     }
 }
