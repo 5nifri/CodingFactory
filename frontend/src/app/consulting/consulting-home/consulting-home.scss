@@ -1,17 +1,17 @@
+// --- Fixed image size (unchanged from earlier) ---
 #consulting-services .service-item .img img {
   width: 100%;
   height: 320px;
   object-fit: cover;
 }
 
-#consulting-services .service-item .img-fallback {
-  height: 320px;
-}
-
+// --- Fixed card height across a row (unchanged from earlier) ---
 #consulting-services .service-item {
   display: flex;
   flex-direction: column;
   height: 100%;
+  position: relative !important; // clickable-card: positioning context for stretched-link
+  cursor: pointer; // clickable-card: visual affordance
 }
 
 #consulting-services .service-item .details {
@@ -28,17 +28,18 @@
   overflow: hidden;
 }
 
-// Ensures every card in a row stretches to match the tallest one
 #consulting-services .row.gy-5 > [class*='col-'] {
   display: flex;
 }
 
+// --- Category ribbon on the image (unchanged from earlier) ---
 #consulting-services .service-item .img {
   position: relative !important;
   overflow: hidden !important;
 }
 
 #consulting-services .service-item .img-fallback {
+  height: 320px; // matches the fixed image size above
   display: flex;
   align-items: center;
   justify-content: center;

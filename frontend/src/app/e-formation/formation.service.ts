@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Formation, Course, Category } from './formation.model';
+import { FormationPageResponse, FormationSearchParams } from './formation-search.model';
 
 @Injectable({ providedIn: 'root' })
 export class FormationService {
@@ -24,5 +25,27 @@ export class FormationService {
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${this.apiUrl}/categories`);
+  }
+
+  /**
+   * Catalogue search: free text + optional category filter + sort mode,
+   * paginated (9 per page by default). Backed by GET /api/formations/search.
+   * `sort: 'RECOMMENDED'` is only meaningful for a logged-in student —
+   * the backend silently falls back to RECENT for guests.
+   */
+  searchFormations(params: FormationSearchParams): Observable<FormationPageResponse> {
+    let httpParams = new HttpParams()
+      .set('sort', params.sort ?? 'RECENT')
+      .set('page', String(params.page ?? 0))
+      .set('size', String(params.size ?? 9));
+
+    if (params.q) {
+      httpParams = httpParams.set('q', params.q);
+    }
+    if (params.categoryId != null) {
+      httpParams = httpParams.set('categoryId', String(params.categoryId));
+    }
+
+    return this.http.get<FormationPageResponse>(`${this.apiUrl}/formations/search`, { params: httpParams });
   }
 }

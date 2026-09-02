@@ -22,7 +22,7 @@
 
     <div class="container">
       <div class="row gy-4">
-        @for (rec of recommendations(); track rec.formationId) {
+        @for (rec of previewRecommendations(); track rec.formationId) {
           <div class="col-lg-4 col-md-6" data-aos="fade-up">
             <div class="portfolio-content h-100 position-relative">
               <span class="badge bg-primary position-absolute top-0 end-0 m-3" style="z-index: 2;">
@@ -42,6 +42,15 @@
           </div>
         }
       </div>
+
+      <div class="text-center mt-4">
+        <a
+          routerLink="/e-formation/catalogue"
+          [queryParams]="{ sort: 'RECOMMENDED' }"
+          class="btn btn-primary">
+          Afficher tous <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
     </div>
   </section>
 }
@@ -50,8 +59,8 @@
 <section id="formations" class="portfolio section">
 
   <div class="container section-title" data-aos="fade-up">
-    <h2>Nos Formations</h2>
-    <p>Découvrez notre catalogue de formations</p>
+    <h2>Formations récentes</h2>
+    <p>Les dernières formations ajoutées à notre catalogue</p>
   </div>
 
   <div class="container">
@@ -72,7 +81,7 @@
       @for (formation of formations(); track formation.id) {
         <div class="col-lg-4 col-md-6" data-aos="fade-up">
           <div class="portfolio-content h-100">
-            <img [src]="getImage(formation)" class="img-fluid" [alt]="formation.title">
+            <img [src]="getImage(formation.imageUrl)" class="img-fluid" [alt]="formation.title">
 
             <div class="portfolio-info">
               <h4>{{ formation.title }}</h4>
@@ -91,5 +100,16 @@
         </div>
       }
     </div>
+
+    @if (!loading() && !error() && formations().length > 0) {
+      <div class="text-center mt-4">
+        <a
+          routerLink="/e-formation/catalogue"
+          [queryParams]="{ sort: 'RECENT' }"
+          class="btn btn-primary">
+          Afficher tous <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    }
   </div>
 </section>

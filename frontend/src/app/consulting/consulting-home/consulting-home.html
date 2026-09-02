@@ -47,8 +47,12 @@
             class="col-xl-4 col-md-6"
             data-aos="zoom-in"
             [attr.data-aos-delay]="200 + (i * 100)"
-          >
 
+          >
+            <a
+              [routerLink]="['/consulting', offer.id]"
+              class="stretched-link"
+            >
             <div class="service-item">
 
               <div class="img" [class.img-fallback]="!offer.image">
@@ -73,18 +77,15 @@
                   <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
                 </div>
 
-                <a
-                  [routerLink]="['/consulting', offer.id]"
-                  class="stretched-link"
-                >
+
                   <h3>{{ offer.title }}</h3>
-                </a>
 
                 <p>{{ offer.description }}</p>
 
               </div>
 
             </div>
+            </a>
 
           </div>
 

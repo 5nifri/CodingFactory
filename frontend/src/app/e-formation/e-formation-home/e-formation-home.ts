@@ -4,10 +4,12 @@ import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import { FormationService } from '../formation.service';
-import { Formation } from '../formation.model';
 import { AuthService } from '../../core/services/auth.service';
 import { RecommendationService } from '../../core/services/recommendation.service';
 import { resolveFormationImageUrl } from '../../core/utils/image-url.util';
+
+const HOME_PREVIEW_RECOMMENDATIONS = 3;
+const HOME_PREVIEW_RECENT = 6;
 
 @Component({
   selector: 'app-e-formation-home',
@@ -25,15 +27,16 @@ export class EFormationHome {
 
   isLoggedIn = this.authService.isLoggedIn;
 
-  // undefined = still loading, null = error, Formation[] = success
+  // Catalogue preview: only the 6 most recent published formations.
+  // undefined = still loading, null = error, FormationPageResponse = success
   private result = toSignal(
-    this.formationService.getPublishedFormations().pipe(
+    this.formationService.searchFormations({ sort: 'RECENT', page: 0, size: HOME_PREVIEW_RECENT }).pipe(
       catchError(() => of(null))
     ),
     { initialValue: undefined }
   );
 
-  formations = computed(() => this.result() ?? []);
+  formations = computed(() => this.result()?.formations ?? []);
   loading = computed(() => this.result() === undefined);
   error = computed(() => this.result() === null ? 'Impossible de charger les formations.' : null);
 
@@ -55,6 +58,11 @@ export class EFormationHome {
     return result.formations;
   });
 
+  // What's actually shown on the home page — capped to keep the section short.
+  previewRecommendations = computed(() =>
+    this.recommendations().slice(0, HOME_PREVIEW_RECOMMENDATIONS)
+  );
+
   // The whole section is hidden for guests, while loading, or when there's
   // nothing to recommend — no partial/empty-state UI for this section,
   // per the "hide entirely" contract decided for the ML integration.
@@ -62,8 +70,8 @@ export class EFormationHome {
     this.isLoggedIn() && this.recommendations().length > 0
   );
 
-  getImage(formation: Formation): string {
-    return resolveFormationImageUrl(formation.imageUrl, this.fallbackImage);
+  getImage(imageUrl: string): string {
+    return resolveFormationImageUrl(imageUrl, this.fallbackImage);
   }
 
   getRecommendationImage(imageUrl: string | null): string {

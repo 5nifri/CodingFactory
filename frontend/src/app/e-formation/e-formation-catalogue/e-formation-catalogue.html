@@ -1,0 +1,121 @@
+<!-- Page Title -->
+<div class="page-title dark-background" data-aos="fade" style="background-image: url(assets/img/page-title-bg.webp);">
+  <div class="container position-relative">
+    <h1>Catalogue des formations</h1>
+    <p>Recherchez et filtrez pour trouver la formation qui vous correspond</p>
+    <nav class="breadcrumbs">
+      <ol>
+        <li><a routerLink="/">Home</a></li>
+        <li><a routerLink="/e-formation">E-Formation Hub</a></li>
+        <li class="current">Catalogue</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<section id="formations-catalogue" class="portfolio section">
+  <div class="container">
+
+    <!-- Search + sort -->
+    <div class="row gy-3 align-items-center mb-4" data-aos="fade-up">
+      <div class="col-md-6">
+        <input
+          type="search"
+          class="form-control"
+          placeholder="Rechercher une formation..."
+          [formControl]="searchControl">
+      </div>
+      <div class="col-md-6 d-flex justify-content-md-end">
+        <select
+          class="form-select w-auto"
+          aria-label="Trier par"
+          (change)="selectSort($any($event.target).value)">
+          <option value="RECOMMENDED" [selected]="sort() === 'RECOMMENDED'">🎯 Recommandé pour vous</option>
+          <option value="RECENT" [selected]="sort() === 'RECENT'">Plus récentes</option>
+          <option value="POPULAR" [selected]="sort() === 'POPULAR'">Plus populaires</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category filter, same markup/classes as the portfolio isotope filters -->
+    <div class="isotope-layout" data-aos="fade-up" data-aos-delay="100">
+      <ul class="portfolio-filters isotope-filters">
+        <li
+          [class.filter-active]="categoryId() === null"
+          (click)="selectCategory(null)">
+          Toutes
+        </li>
+        @for (cat of categories(); track cat.id) {
+          <li
+            [class.filter-active]="categoryId() === cat.id"
+            (click)="selectCategory(cat.id)">
+            {{ cat.name }}
+          </li>
+        }
+      </ul>
+    </div>
+
+    @if (loading()) {
+      <p class="text-center">Chargement des formations...</p>
+    }
+
+    @if (error()) {
+      <p class="text-center text-danger">{{ error() }}</p>
+    }
+
+    @if (!loading() && !error() && formations().length === 0) {
+      <p class="text-center">Aucune formation ne correspond à votre recherche</p>
+    }
+
+    @if (!loading() && !error() && formations().length > 0) {
+      <p class="text-muted small mb-4">{{ totalElements() }} formation(s) trouvée(s)</p>
+    }
+
+    <!-- Results grid -->
+    <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
+      @for (formation of formations(); track formation.id) {
+        <div class="col-lg-4 col-md-6">
+          <div class="portfolio-content h-100">
+            <img [src]="getImage(formation.imageUrl)" class="img-fluid" [alt]="formation.title">
+
+            <div class="portfolio-info">
+              <h4>{{ formation.title }}</h4>
+              <p>{{ formation.description }}</p>
+
+              <div class="d-flex justify-content-between align-items-center mt-2 small">
+                <span>{{ formation.duration }} • {{ formation.totalCourses }} cours</span>
+                <strong>{{ formation.price }} TND</strong>
+              </div>
+
+              <a [routerLink]="['/e-formation', formation.id]" class="details-link" title="Voir les détails">
+                <i class="bi bi-link-45deg"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Paginator -->
+    @if (totalPages() > 1) {
+      <nav class="mt-5" aria-label="Pagination du catalogue">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="page() === 0">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(page() - 1)">Précédent</a>
+          </li>
+
+          @for (p of pageNumbers(); track p) {
+            <li class="page-item" [class.active]="p === page()">
+              <a class="page-link" href="javascript:void(0)" (click)="goToPage(p)">{{ p + 1 }}</a>
+            </li>
+          }
+
+          <li class="page-item" [class.disabled]="page() >= totalPages() - 1">
+            <a class="page-link" href="javascript:void(0)" (click)="goToPage(page() + 1)">Suivant</a>
+          </li>
+        </ul>
+      </nav>
+    }
+
+  </div>
+</section>
