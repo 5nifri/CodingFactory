@@ -1,6 +1,6 @@
-import { ChangeDetectorRef, Component, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { email, form, FormField, minLength, required } from '@angular/forms/signals';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { AdminAuthService } from 'src/app/core/services/admin-auth.service';
@@ -11,10 +11,11 @@ import { AdminAuthService } from 'src/app/core/services/admin-auth.service';
   templateUrl: './auth-signin.component.html',
   styleUrls: ['./auth-signin.component.scss']
 })
-export class AuthSigninComponent {
+export class AuthSigninComponent implements OnInit {
   private cd = inject(ChangeDetectorRef);
   private authService = inject(AdminAuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   submitted = signal(false);
   error = signal('');
@@ -31,6 +32,17 @@ export class AuthSigninComponent {
     required(schemaPath.password, { message: 'Password is required' });
     minLength(schemaPath.password, 8, { message: 'Password must be at least 8 characters' });
   });
+
+  ngOnInit(): void {
+    // Check for token in URL (from front-office redirect)
+    this.route.queryParams.subscribe(params => {
+      const token = params['token'];
+      if (token) {
+        this.authService.setToken(token);
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   onSubmit(event: Event) {
     event.preventDefault();

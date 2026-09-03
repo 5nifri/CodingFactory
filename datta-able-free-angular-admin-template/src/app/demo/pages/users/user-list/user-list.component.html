@@ -1,0 +1,107 @@
+<div class="row">
+  <div class="col-xl-12">
+    <app-card cardTitle="Utilisateurs" [options]="false" blockClass="table-border-style">
+
+      <!-- Header with search and filters -->
+      <div class="d-flex flex-wrap gap-2 mb-3 align-items-center">
+        <div class="position-relative" style="min-width: 260px; flex: 1;">
+          <i class="feather icon-search position-absolute" style="top: 10px; left: 12px; color: #adb5bd;"></i>
+          <input type="search" class="form-control ps-5"
+                 [formControl]="searchControl"
+                 placeholder="Rechercher un utilisateur...">
+          @if (searchTerm()) {
+            <button type="button" class="btn btn-link position-absolute" style="top: 2px; right: 8px; color: #adb5bd; text-decoration: none;"
+                    (click)="searchControl.setValue('')">
+              <i class="feather icon-x"></i>
+            </button>
+          }
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <!-- Role filter -->
+          <div class="btn-group" role="group">
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="roleFilter() === 'ALL'" (click)="setRoleFilter('ALL')">Tous</button>
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="roleFilter() === 'ADMIN'" (click)="setRoleFilter('ADMIN')">Admin</button>
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="roleFilter() === 'STUDENT'" (click)="setRoleFilter('STUDENT')">Étudiants</button>
+          </div>
+
+          <!-- Status filter -->
+          <div class="btn-group" role="group">
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="statusFilter() === 'ALL'" (click)="setStatusFilter('ALL')">Tous</button>
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="statusFilter() === 'ENABLED'" (click)="setStatusFilter('ENABLED')">Actifs</button>
+            <button class="btn btn-outline-secondary btn-sm" [class.active]="statusFilter() === 'DISABLED'" (click)="setStatusFilter('DISABLED')">Désactivés</button>
+          </div>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+      } @else if (filteredUsers().length === 0) {
+        <p class="text-center text-muted">
+          {{ searchTerm() ? 'Aucun utilisateur ne correspond à votre recherche.' : 'Aucun utilisateur pour le moment.' }}
+        </p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-light">
+            <tr>
+              <th>Nom complet</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+              <th>Intérêts</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (user of filteredUsers(); track user.id) {
+                <tr>
+                  <td>{{ user.firstName }} {{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <select class="form-select form-select-sm" style="width: auto;"
+                            [value]="user.role"
+                            [disabled]="updatingId() === user.id"
+                            (change)="changeRole(user, $event)">
+                      <option value="ADMIN">Admin</option>
+                      <option value="STUDENT">Étudiant</option>
+                    </select>
+                  </td>
+                  <td>
+                    <span class="badge {{ statusBadgeClass(user.enabled) }}"
+                          style="cursor: pointer;"
+                          (click)="toggleEnabled(user)"
+                          [title]="user.enabled ? 'Cliquer pour désactiver' : 'Cliquer pour activer'">
+                      {{ user.enabled ? 'Actif' : 'Désactivé' }}
+                    </span>
+                  </td>
+                  <td>
+                    @if (user.interests && user.interests.length > 0) {
+                      <span class="badge bg-secondary me-1" *ngFor="let interest of user.interests.slice(0, 2)">
+                        {{ interest }}
+                      </span>
+                      @if (user.interests.length > 2) {
+                        <span class="badge bg-secondary">+{{ user.interests.length - 2 }}</span>
+                      }
+                    } @else {
+                      <span class="text-muted">—</span>
+                    }
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-danger"
+                            [disabled]="deletingId() === user.id"
+                            (click)="deleteUser(user)">
+                      {{ deletingId() === user.id ? '...' : 'Supprimer' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </app-card>
+  </div>
+</div>

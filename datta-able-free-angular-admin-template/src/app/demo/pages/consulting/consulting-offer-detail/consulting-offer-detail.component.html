@@ -2,7 +2,6 @@
      FIRST ROW: MAIN CONTENT + SIDEBAR
      ============================================= -->
 <div class="row">
-  <!-- Main content -->
   <div class="col-xl-8">
     <app-card [cardTitle]="(offer()?.title ?? 'Offre de consulting')" [options]="false">
 
@@ -115,8 +114,7 @@
             </thead>
             <tbody>
               @for (req of filteredRequests(); track req.id) {
-                <tr style="cursor: pointer;" [routerLink]="['/consulting/requests', req.id]">
-                  <td>
+                <tr style="cursor: pointer;" (click)="goToRequestDetail(req.id)">                  <td>
                     <h6 class="mb-1">{{ req.userFullName }}</h6>
                     <p class="m-0 text-muted">{{ req.userEmail }}</p>
                   </td>

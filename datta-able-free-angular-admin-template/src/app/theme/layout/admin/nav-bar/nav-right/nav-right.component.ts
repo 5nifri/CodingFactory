@@ -1,11 +1,8 @@
-// angular import
 import { Component, inject } from '@angular/core';
-
-// bootstrap import
+import { Router } from '@angular/router';
 import { NgbDropdownConfig } from '@ng-bootstrap/ng-bootstrap';
-
-// project import
 import { SharedModule } from 'src/app/theme/shared/shared.module';
+import { AdminAuthService } from 'src/app/core/services/admin-auth.service';
 
 @Component({
   selector: 'app-nav-right',
@@ -15,12 +12,21 @@ import { SharedModule } from 'src/app/theme/shared/shared.module';
   providers: [NgbDropdownConfig]
 })
 export class NavRightComponent {
-  // public props
+  private authService = inject(AdminAuthService);
+  private router = inject(Router);
 
-  // constructor
   constructor() {
     const config = inject(NgbDropdownConfig);
-
     config.placement = 'bottom-right';
+  }
+
+  logout(): void {
+    this.authService.logout('http://localhost:4200');
+  }
+
+  goToFrontOffice(): void {
+    const token = this.authService.getToken();
+    // Redirect to front-office with token as query param
+    window.location.href = `http://localhost:4200?token=${encodeURIComponent(token || '')}`;
   }
 }

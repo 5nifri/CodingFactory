@@ -1,6 +1,6 @@
-import { Component, inject, signal, computed, effect } from '@angular/core';  // <-- add effect if needed
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, ActivatedRoute } from '@angular/router';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';          // ← added Router
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -17,6 +17,7 @@ import { ConsultationRequest, RequestStatus } from 'src/app/core/models/consulti
 export class ConsultationRequestListComponent {
   private requestService = inject(AdminConsultationRequestService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);          // ← inject Router
 
   requests = signal<ConsultationRequest[]>([]);
   loading = signal(true);
@@ -37,8 +38,12 @@ export class ConsultationRequestListComponent {
     const term = this.searchTerm().toLowerCase().trim();
     const consultingId = this.consultingIdFilter();
 
-    if (filter !== 'ALL') result = result.filter(r => r.status === filter);
-    if (consultingId !== null) result = result.filter(r => r.consultingId === consultingId);
+    if (filter !== 'ALL') {
+      result = result.filter(r => r.status === filter);
+    }
+    if (consultingId !== null) {
+      result = result.filter(r => r.consultingId === consultingId);
+    }
     if (term) {
       result = result.filter(r =>
         r.userFullName.toLowerCase().includes(term) ||
@@ -47,22 +52,21 @@ export class ConsultationRequestListComponent {
         r.message.toLowerCase().includes(term)
       );
     }
-
     return result;
   });
 
   constructor() {
     this.load();
 
-    // 👇 React to query param changes (even when already on the page)
+    // Watch for query param changes (e.g., from consulting offer detail)
     this.route.queryParams
       .pipe(takeUntilDestroyed())
       .subscribe(params => {
         const cid = Number(params['consultingId']);
-        // If cid is a valid number (>0), filter; otherwise, show all
         this.consultingIdFilter.set(cid || null);
       });
 
+    // Search debounce
     this.searchControl.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
       .subscribe(value => this.searchTerm.set(value));
@@ -89,13 +93,10 @@ export class ConsultationRequestListComponent {
 
   clearConsultingFilter(): void {
     this.consultingIdFilter.set(null);
-    // Optionally remove query param from URL
-    // this.router.navigate([], { queryParams: { consultingId: null }, queryParamsHandling: 'merge' });
   }
 
   updateStatus(request: ConsultationRequest, status: RequestStatus): void {
     if (this.updatingId()) return;
-
     this.updatingId.set(request.id);
     this.requestService.updateStatus(request.id, status).subscribe({
       next: (updated) => {
@@ -116,5 +117,11 @@ export class ConsultationRequestListComponent {
       case 'COMPLETED': return 'bg-success';
       case 'REJECTED': return 'bg-danger';
     }
+  }
+
+  goToDetail(id: number): void {
+    this.router.navigate(['/consulting/requests', id], {
+      state: { returnUrl: '/consulting/requests' }
+    });
   }
 }

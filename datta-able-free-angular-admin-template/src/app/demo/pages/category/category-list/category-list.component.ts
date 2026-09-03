@@ -57,6 +57,12 @@ export class CategoryListComponent {
     });
   }
 
+  // Clear search input
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.searchTerm.set('');
+  }
+
   onDelete(category: Category): void {
     if (!category.id) return;
     if (!confirm(`Supprimer la catégorie "${category.name}" ?`)) return;

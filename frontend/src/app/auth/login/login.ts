@@ -33,9 +33,13 @@ export class Login {
       next: () => {
         this.loading = false;
         if (this.authService.isAdmin()) {
-          // Admins aren't expected to log in here — this is just a safety
-          // net that sends them to the real admin app instead of /e-formation.
-          window.location.href = 'http://localhost:4201';
+          const token = this.authService.getToken();
+          if (token) {
+            window.location.href = `http://localhost:4201/login?token=${encodeURIComponent(token)}`;
+          } else {
+            // Fallback: redirect to admin login if token is missing (shouldn't happen)
+            window.location.href = 'http://localhost:4201/login';
+          }
         } else {
           this.router.navigate(['/']);
         }

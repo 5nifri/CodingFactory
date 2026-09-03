@@ -5,8 +5,8 @@
 import packageInfo from '../../package.json';
 
 export const environment = {
-  appVersion: packageInfo.version,
-  production: true
+  production: false,
+  appVersion: '1.0.0',
 };
 /*
  * For easier debugging in development mode, you can import the following file

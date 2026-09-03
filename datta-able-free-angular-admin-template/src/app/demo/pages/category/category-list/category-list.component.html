@@ -2,9 +2,20 @@
   <div class="col-xl-12">
     <app-card cardTitle="Catégories" [options]="false" blockClass="table-border-style">
 
+      <!-- Header with search and add button -->
       <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
-        <input type="search" class="form-control" style="min-width: 260px;"
-               [formControl]="searchControl" placeholder="Rechercher une catégorie...">
+        <div class="position-relative" style="min-width: 260px;">
+          <i class="feather icon-search position-absolute" style="top: 10px; left: 12px; color: #adb5bd;"></i>
+          <input type="search" class="form-control ps-5"
+                 [formControl]="searchControl"
+                 placeholder="Rechercher une catégorie...">
+          @if (searchTerm()) {
+            <button type="button" class="btn btn-link position-absolute" style="top: 2px; right: 8px; color: #adb5bd; text-decoration: none;"
+                    (click)="clearSearch()">
+              <i class="feather icon-x"></i>
+            </button>
+          }
+        </div>
         <a [routerLink]="['/categories/new']" class="btn btn-primary">
           <i class="feather icon-plus me-1"></i> Nouvelle catégorie
         </a>
@@ -20,8 +31,8 @@
         </p>
       } @else {
         <div class="table-responsive">
-          <table class="table table-hover mb-0">
-            <thead>
+          <table class="table table-hover table-striped align-middle mb-0">
+            <thead class="table-light">
             <tr>
               <th>Nom</th>
               <th>Description</th>
@@ -31,8 +42,14 @@
             <tbody>
               @for (category of filteredCategories(); track category.id) {
                 <tr style="cursor: pointer;" [routerLink]="['/categories', category.id]">
-                  <td><h6 class="mb-0">{{ category.name }}</h6></td>
-                  <td class="text-truncate" style="max-width: 400px">{{ category.description }}</td>
+                  <td>
+                    <span class="badge bg-info bg-opacity-10 text-info fw-normal fs-6 px-3 py-2">
+                      {{ category.name }}
+                    </span>
+                  </td>
+                  <td class="text-truncate" style="max-width: 400px;">
+                    {{ category.description || '—' }}
+                  </td>
                   <td class="text-end" (click)="$event.stopPropagation()">
                     <a [routerLink]="['/categories', category.id]" class="btn btn-sm btn-outline-info me-1" title="Voir">
                       <i class="feather icon-eye"></i>

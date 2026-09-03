@@ -12,6 +12,8 @@ import { FileUploadService } from 'src/app/core/services/file-upload.service';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Location } from '@angular/common';
+
 
 @Component({
   selector: 'app-consulting-offer-detail',
@@ -25,6 +27,7 @@ export class ConsultingOfferDetailComponent {
   private offerService = inject(AdminConsultingOfferService);
   private requestService = inject(AdminConsultationRequestService);
   private fileUploadService = inject(FileUploadService);
+  private location = inject(Location);
 
   offerId = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -104,12 +107,17 @@ export class ConsultingOfferDetailComponent {
       },
       error: (err) => {
         this.deleting.set(false);
-        alert(err?.error?.message ?? 'Échec de la suppression. Veuillez réessayer.');
+        alert(err?.error?.message ?? 'Échec de la suppression.');
       }
     });
   }
 
   goBack(): void {
-    this.router.navigate(['/consulting']);
+    this.location.back();
+  }
+  goToRequestDetail(id: number): void {
+    this.router.navigate(['/consulting/requests', id], {
+      state: { returnUrl: '/consulting/' + this.offerId }
+    });
   }
 }

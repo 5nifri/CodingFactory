@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { AdminComponent } from './theme/layout/admin/admin.component';
 import { GuestComponent } from './theme/layout/guest/guest.component';
-import { adminAuthGuard } from './core/services/admin.guard';
+import {adminAuthGuard} from './core/services/admin.guard';
 import {
   ConsultationRequestListComponent
 } from "src/app/demo/pages/consulting/consultation-request-list/consultation-request-list.component";
@@ -21,6 +21,7 @@ import {
 } from "src/app/demo/pages/consulting/consulting-offer-detail/consulting-offer-detail.component";
 import {CategoryDetailComponent} from "src/app/demo/pages/category/category-detail/category-detail.component";
 import {CourseDetailComponent} from "src/app/demo/pages/formations/course-detail/course-detail.component";
+import {adminLoginGuard} from "src/app/core/services/admin-login.guard";
 
 const routes: Routes = [
   {
@@ -35,7 +36,14 @@ const routes: Routes = [
       },
       {
         path: 'dashboard',
-        loadComponent: () => import('./demo/dashboard/dashboard.component').then((c) => c.DashboardComponent)
+        loadComponent: () => import('./demo/pages/admin-dashboard/admin-dashboard.component')
+          .then(c => c.AdminDashboardComponent)
+      },
+      {
+        path: 'dashboard',
+        loadComponent: () => import('./demo/pages/admin-dashboard/admin-dashboard.component')
+          .then(c => c.AdminDashboardComponent),
+        canActivate: [adminAuthGuard]    // protects dashboard
       },
       {
         path: 'basic',
@@ -56,6 +64,11 @@ const routes: Routes = [
       {
         path: 'sample-page',
         loadComponent: () => import('./demo/extra/sample-page/sample-page.component').then((c) => c.SamplePageComponent)
+      },
+      {
+        path: 'users',
+        loadComponent: () => import('./demo/pages/users/user-list/user-list.component')
+          .then(c => c.UserListComponent)
       },
       {
         path: 'formations',
@@ -94,15 +107,15 @@ const routes: Routes = [
         children: [
           { path: '', component: ConsultingOfferListComponent },
           { path: 'new', component: ConsultingOfferFormComponent },
-          { path: ':id/edit', component: ConsultingOfferFormComponent },
-          { path: ':id', component: ConsultingOfferDetailComponent },
           {
-            path: 'requests',
+            path: 'requests',                                      // ← moved before :id
             children: [
               { path: '', component: ConsultationRequestListComponent },
               { path: ':id', component: ConsultationRequestDetailComponent }
             ]
-          }
+          },
+          { path: ':id/edit', component: ConsultingOfferFormComponent },
+          { path: ':id', component: ConsultingOfferDetailComponent }
         ]
       },
       {
@@ -135,7 +148,9 @@ const routes: Routes = [
     children: [
       {
         path: 'login',
-        loadComponent: () => import('./demo/pages/authentication/auth-signin/auth-signin.component').then((c) => c.AuthSigninComponent)
+        loadComponent: () => import('./demo/pages/authentication/auth-signin/auth-signin.component')
+          .then(c => c.AuthSigninComponent),
+        canActivate: [adminLoginGuard]   // redirects to dashboard if already logged in
       },
       {
         path: 'register',

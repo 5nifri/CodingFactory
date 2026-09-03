@@ -6,6 +6,7 @@ import { catchError, of } from 'rxjs';
 import { SharedModule } from 'src/app/theme/shared/shared.module';
 import { AdminConsultationRequestService } from 'src/app/core/services/admin-consultation-request.service';
 import { ConsultationRequest, RequestStatus } from 'src/app/core/models/consulting.model';
+import { Location } from '@angular/common';  // <-- import Location
 
 @Component({
   selector: 'app-consultation-request-detail',
@@ -17,6 +18,7 @@ export class ConsultationRequestDetailComponent {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private requestService = inject(AdminConsultationRequestService);
+  private location = inject(Location);  // <-- inject Location
 
   requestId = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -88,12 +90,17 @@ export class ConsultationRequestDetailComponent {
   }
 
   goBack(): void {
-    const consultingId = this.request()?.consultingId;
-    if (consultingId) {
-      this.router.navigate(['/consulting', consultingId]);
-    } else {
-      // Fallback: go to the consulting list if ID is missing
-      this.router.navigate(['/consulting']);
-    }
+    // Try to go back in history; if there's no previous page, fallback to the list.
+    // Using location.back() will navigate to the previous page.
+    // We also check if the previous URL is known; but it's simpler to just use back().
+    // However, if the user came from an external link, we might want to go to the list.
+    // We'll use a combination: try to go back, but if there's no state, go to list.
+    // For safety, we can check if the previous route is /consulting/requests or /consulting/:id.
+    // We'll use the router's navigation history: the last successful navigation.
+    // A simple approach: go back if possible, else navigate to the list.
+    // The location.back() will work in most cases.
+    this.location.back();
+    // If you want a fallback, you could wrap in a setTimeout and check if navigation occurred.
+    // But for simplicity, we'll just use back().
   }
 }

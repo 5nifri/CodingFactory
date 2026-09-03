@@ -1,0 +1,132 @@
+<div class="row">
+  <!-- Stats Cards -->
+  @for (metric of ['totalUsers', 'totalFormations', 'totalCourses', 'totalCategories', 'totalConsultingOffers', 'totalConsultingRequests']; track metric) {
+    <div class="col-xl-2 col-md-4 col-sm-6">
+      <div class="card {{ getCardColor(metric) }}">
+        <div class="card-block">
+          <div class="row d-flex align-items-center">
+            <div class="col-auto">
+              <i class="{{ getCardIcon(metric) }} f-30 text-white"></i>
+            </div>
+            <div class="col">
+              <h3 class="f-w-300 text-white mb-0">
+                {{ loading() ? '...' : stats()?.[metric] ?? 0 }}
+              </h3>
+              <span class="text-uppercase text-white opacity-50 small">
+                {{ metric.replace('total', '') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+<!-- Charts Row -->
+<div class="row">
+  <div class="col-xl-6">
+    <app-card cardTitle="Formations par catégorie" [options]="false">
+      @if (!loading() && stats()) {
+        <apx-chart
+          [series]="categoryChartOptions.series"
+          [chart]="categoryChartOptions.chart"
+          [labels]="categoryChartOptions.labels"
+          [colors]="categoryChartOptions.colors"
+          [legend]="categoryChartOptions.legend"
+          [dataLabels]="categoryChartOptions.dataLabels"
+          [plotOptions]="categoryChartOptions.plotOptions">
+        </apx-chart>
+      } @else {
+        <p class="text-center">Chargement des données...</p>
+      }
+    </app-card>
+  </div>
+  <div class="col-xl-6">
+    <app-card cardTitle="Demandes par statut" [options]="false">
+      @if (!loading() && stats()) {
+        <apx-chart
+          [series]="statusChartOptions.series"
+          [chart]="statusChartOptions.chart"
+          [colors]="statusChartOptions.colors"
+          [plotOptions]="statusChartOptions.plotOptions"
+          [dataLabels]="statusChartOptions.dataLabels"
+          [xaxis]="statusChartOptions.xaxis"
+          [yaxis]="statusChartOptions.yaxis"
+          [legend]="statusChartOptions.legend"
+          [tooltip]="statusChartOptions.tooltip">
+        </apx-chart>
+      } @else {
+        <p class="text-center">Chargement des données...</p>
+      }
+    </app-card>
+  </div>
+</div>
+
+<!-- Recent Users & Requests -->
+<div class="row">
+  <div class="col-xl-6">
+    <app-card cardTitle="Utilisateurs récents" [options]="false" blockClass="table-border-style">
+      @if (!loading() && stats()?.recentUsers?.length) {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Rôle</th>
+              <th>Statut</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (user of stats()!.recentUsers; track user.id) {
+                <tr>
+                  <td>{{ user.fullName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td><span class="badge {{ getRoleBadgeClass(user.role) }}">{{ user.role }}</span></td>
+                  <td>
+                    <span class="badge {{ user.enabled ? 'bg-success' : 'bg-secondary' }}">
+                      {{ user.enabled ? 'Actif' : 'Désactivé' }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="text-center text-muted">Aucun utilisateur récent.</p>
+      }
+    </app-card>
+  </div>
+  <div class="col-xl-6">
+    <app-card cardTitle="Demandes récentes" [options]="false" blockClass="table-border-style">
+      @if (!loading() && stats()?.recentRequests?.length) {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>Demandeur</th>
+              <th>Offre</th>
+              <th>Statut</th>
+              <th>Date</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (req of stats()!.recentRequests; track req.id) {
+                <tr>
+                  <td>{{ req.userFullName }}</td>
+                  <td>{{ req.consultingTitle }}</td>
+                  <td><span class="badge {{ getStatusBadgeClass(req.status) }}">{{ req.status }}</span></td>
+                  <td>{{ req.createdAt | date:'dd/MM/yyyy' }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p class="text-center text-muted">Aucune demande récente.</p>
+      }
+    </app-card>
+  </div>
+</div>

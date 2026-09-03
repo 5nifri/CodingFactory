@@ -30,7 +30,7 @@ interface DecodedToken {
 export class AdminAuthService {
 
   private readonly apiUrl = 'http://localhost:8080/api/auth';
-  private readonly tokenKey = 'cf_admin_token';
+  private readonly tokenKey = 'cf_token';  // instead of 'cf_admin_token'
 
   private _isLoggedIn = signal<boolean>(this.computeIsLoggedIn());
   readonly isLoggedIn = this._isLoggedIn.asReadonly();
@@ -53,10 +53,15 @@ export class AdminAuthService {
     );
   }
 
-  logout(): void {
+  // 👇 Updated logout with optional redirect URL
+  logout(redirectUrl?: string): void {
     localStorage.removeItem(this.tokenKey);
     this._isLoggedIn.set(false);
-    this.router.navigate(['/login']);
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    } else {
+      this.router.navigate(['/login']);
+    }
   }
 
   getToken(): string | null {
@@ -78,5 +83,8 @@ export class AdminAuthService {
     return this.http.post(`${this.apiUrl}/register`, request);
   }
 
-
+  setToken(token: string): void {
+    localStorage.setItem(this.tokenKey, token);
+    this._isLoggedIn.set(true);
+  }
 }
