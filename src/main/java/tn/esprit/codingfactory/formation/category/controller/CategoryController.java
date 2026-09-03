@@ -38,4 +38,10 @@ public class CategoryController {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CategoryResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoryService.getById(id));
+    }
+
 }

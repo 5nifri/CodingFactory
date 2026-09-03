@@ -38,5 +38,17 @@ public class CourseController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/api/formations/{formationId}/courses/reorder")
+    public ResponseEntity<Void> reorderCourses(
+            @PathVariable Long formationId,
+            @RequestBody List<Long> courseIds
+    ) {
+        courseService.reorder(formationId, courseIds);
+        return ResponseEntity.noContent().build();
+    }
 
+    @GetMapping("/api/courses/{courseId}")
+    public ResponseEntity<CourseResponse> getById(@PathVariable Long courseId) {
+        return ResponseEntity.ok(courseService.getById(courseId));
+    }
 }
