@@ -1,0 +1,98 @@
+<div class="row">
+  <div class="col-xl-12">
+    <app-card cardTitle="Formations" [options]="false" blockClass="table-border-style">
+
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <div class="d-flex gap-2">
+          <input type="search" class="form-control" style="min-width: 260px;"
+                 [formControl]="searchControl" placeholder="Rechercher une formation...">
+        </div>
+        <a [routerLink]="['/formations/new']" class="btn btn-primary">
+          <i class="feather icon-plus me-1"></i> Nouvelle formation
+        </a>
+      </div>
+
+      <!-- Status pills -->
+      <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'ALL'" href="javascript:void(0)" (click)="setFilter('ALL')">
+            Toutes <span class="badge bg-secondary ms-1">{{ formations().length }}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'PUBLISHED'" href="javascript:void(0)" (click)="setFilter('PUBLISHED')">
+            Publiées
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'DRAFT'" href="javascript:void(0)" (click)="setFilter('DRAFT')">
+            Brouillons
+          </a>
+        </li>
+      </ul>
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+      } @else if (filteredFormations().length === 0) {
+        <p class="text-center text-muted">
+          {{ searchTerm() ? 'Aucune formation ne correspond à votre recherche.' : 'Aucune formation pour le moment.' }}
+        </p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+              <th>Image</th>
+              <th>Titre</th>
+              <th>Catégorie</th>
+              <th>Prix</th>
+              <th>Durée</th>
+              <th>Statut</th>
+              <th>Cours</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (formation of filteredFormations(); track formation.id) {
+                <tr style="cursor: pointer;" [routerLink]="['/formations', formation.id]">
+                  <td (click)="$event.stopPropagation()">
+                    <img [src]="getImage(formation.imageUrl)" style="width: 50px; height: 40px; object-fit: cover; border-radius: 4px;">
+                  </td>
+                  <td><h6 class="mb-0">{{ formation.title }}</h6></td>
+                  <td><span class="badge bg-info">{{ formation.categoryName }}</span></td>
+                  <td>{{ formation.price }} TND</td>
+                  <td>{{ formation.duration }}</td>
+                  <td>
+                    <span class="badge" [class.bg-success]="formation.published" [class.bg-secondary]="!formation.published">
+                      {{ formation.published ? 'Publiée' : 'Brouillon' }}
+                    </span>
+                  </td>
+                  <td>{{ formation.totalCourses }}</td>
+                  <td class="text-end" (click)="$event.stopPropagation()">
+                    <a [routerLink]="['/formations', formation.id]" class="btn btn-sm btn-outline-info me-1" title="Voir">
+                      <i class="feather icon-eye"></i>
+                    </a>
+                    <a [routerLink]="['/formations', formation.id, 'edit']" class="btn btn-sm btn-outline-primary me-1">
+                      Modifier
+                    </a>
+                    <a [routerLink]="['/formations', formation.id, 'courses']" class="btn btn-sm btn-outline-secondary me-1">
+                      Cours
+                    </a>
+                    <button class="btn btn-sm btn-outline-danger"
+                            [disabled]="deletingId() === formation.id"
+                            (click)="onDelete(formation)">
+                      {{ deletingId() === formation.id ? '...' : 'Supprimer' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </app-card>
+  </div>
+</div>

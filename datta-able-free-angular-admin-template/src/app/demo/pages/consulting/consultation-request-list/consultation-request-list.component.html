@@ -1,0 +1,79 @@
+<div class="row">
+  <div class="col-xl-12">
+    <app-card cardTitle="Demandes de consulting" [options]="false" blockClass="table-border-style">
+
+      <ul class="nav nav-pills mb-3">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'ALL'" href="javascript:void(0)" (click)="setFilter('ALL')">Toutes</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'PENDING'" href="javascript:void(0)" (click)="setFilter('PENDING')">En attente</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'ACCEPTED'" href="javascript:void(0)" (click)="setFilter('ACCEPTED')">Acceptées</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'COMPLETED'" href="javascript:void(0)" (click)="setFilter('COMPLETED')">Terminées</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="statusFilter() === 'REJECTED'" href="javascript:void(0)" (click)="setFilter('REJECTED')">Rejetées</a>
+        </li>
+      </ul>
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+      } @else if (filteredRequests().length === 0) {
+        <p class="text-center text-muted">Aucune demande dans cette catégorie.</p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>Demandeur</th>
+              <th>Offre</th>
+              <th>Message</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (request of filteredRequests(); track request.id) {
+                <tr style="cursor: pointer;" [routerLink]="['/consulting/requests', request.id]">
+                  <td (click)="$event.stopPropagation()">
+                    <h6 class="mb-1">{{ request.userFullName }}</h6>
+                    <p class="m-0 text-muted">{{ request.userEmail }}</p>
+                  </td>
+                  <td>{{ request.consultingTitle }}</td>
+                  <td class="text-truncate" style="max-width: 260px">{{ request.message }}</td>
+                  <td><span class="badge {{ statusBadgeClass(request.status) }}">{{ request.status }}</span></td>
+                  <td><span class="text-muted">{{ request.createdAt | date:'dd/MM/yyyy' }}</span></td>
+                  <td class="text-end" (click)="$event.stopPropagation()">
+                    @if (request.status === 'PENDING') {
+                      <button type="button" class="badge me-2 bg-success text-white border-0 f-12"
+                              [disabled]="updatingId() === request.id" (click)="updateStatus(request, 'ACCEPTED')">
+                        Accepter
+                      </button>
+                      <button type="button" class="badge me-2 bg-danger text-white border-0 f-12"
+                              [disabled]="updatingId() === request.id" (click)="updateStatus(request, 'REJECTED')">
+                        Rejeter
+                      </button>
+                    }
+                    @if (request.status === 'ACCEPTED') {
+                      <button type="button" class="badge me-2 bg-primary text-white border-0 f-12"
+                              [disabled]="updatingId() === request.id" (click)="updateStatus(request, 'COMPLETED')">
+                        Marquer terminé
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </app-card>
+  </div>
+</div>

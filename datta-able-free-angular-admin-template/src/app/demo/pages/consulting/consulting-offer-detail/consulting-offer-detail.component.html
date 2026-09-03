@@ -1,0 +1,144 @@
+<!-- =============================================
+     FIRST ROW: MAIN CONTENT + SIDEBAR
+     ============================================= -->
+<div class="row">
+  <!-- Main content -->
+  <div class="col-xl-8">
+    <app-card [cardTitle]="(offer()?.title ?? 'Offre de consulting')" [options]="false">
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+        <button class="btn btn-outline-secondary" (click)="goBack()">
+          <i class="feather icon-arrow-left"></i> Retour
+        </button>
+      } @else if (offer()) {
+        <div class="mb-3">
+          <button class="btn btn-outline-secondary btn-sm mb-3" (click)="goBack()">
+            <i class="feather icon-arrow-left"></i> Retour
+          </button>
+        </div>
+
+        @if (imageUrl()) {
+          <img [src]="imageUrl()" class="img-fluid rounded mb-3" style="max-height: 200px; object-fit: cover;">
+        }
+
+        <div class="d-flex align-items-center gap-2 mb-3">
+          @if (offer()!.category) {
+            <span class="badge bg-info">{{ offer()!.category }}</span>
+          }
+          @if (offer()!.icon) {
+            <i class="bi" [class]="offer()!.icon" style="font-size: 1.25rem;"></i>
+          }
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="text-muted small text-uppercase">Description</label>
+          <div class="p-3 bg-light rounded border">
+            <p class="mb-0" style="white-space: pre-wrap;">{{ offer()!.description }}</p>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap gap-2 mb-4">
+          <a [routerLink]="['/consulting', offerId, 'edit']" class="btn btn-primary">
+            <i class="feather icon-edit"></i> Modifier
+          </a>
+          <button class="btn btn-outline-danger" (click)="deleteOffer()" [disabled]="deleting()">
+            @if (deleting()) {
+              <i class="feather icon-loader me-1"></i> Suppression...
+            } @else {
+              <i class="feather icon-trash-2 me-1"></i> Supprimer
+            }
+          </button>
+          <button class="btn btn-outline-secondary" (click)="goBack()">Retour</button>
+        </div>
+      }
+
+    </app-card>
+  </div>
+
+  <!-- Sidebar -->
+  @if (offer()) {
+    <div class="col-xl-4">
+      <app-card cardTitle="Informations" [options]="false">
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2">
+            <small class="text-muted d-block">ID</small>
+            <span class="fw-bold">#{{ offer()!.id }}</span>
+          </li>
+          <li class="mb-2">
+            <small class="text-muted d-block">Catégorie</small>
+            <span>{{ offer()!.category ?? '—' }}</span>
+          </li>
+          <li class="mb-2">
+            <small class="text-muted d-block">Demandes en attente</small>
+            <span class="fw-bold" [class.text-danger]="pendingCount() > 0">{{ pendingCount() }}</span>
+          </li>
+          <li>
+            <small class="text-muted d-block">Demandes totales</small>
+            <span>{{ requests().length }}</span>
+          </li>
+        </ul>
+      </app-card>
+    </div>
+  }
+</div>
+
+<!-- =============================================
+     SECOND ROW: FULL‑WIDTH REQUESTS LIST
+     ============================================= -->
+<div class="row mt-4">
+  <div class="col-12">
+    <app-card cardTitle="Demandes pour cette offre" [options]="false">
+
+      <!-- Search bar -->
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <input type="search" class="form-control" style="min-width: 260px;"
+               [formControl]="requestSearchControl"
+               placeholder="Rechercher un demandeur ou un message...">
+      </div>
+
+      @if (filteredRequests().length === 0) {
+        <p class="text-center text-muted">Aucune demande pour cette offre.</p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>Demandeur</th>
+              <th>Message</th>
+              <th>Statut</th>
+              <th>Date</th>
+              <th class="text-end"></th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (req of filteredRequests(); track req.id) {
+                <tr style="cursor: pointer;" [routerLink]="['/consulting/requests', req.id]">
+                  <td>
+                    <h6 class="mb-1">{{ req.userFullName }}</h6>
+                    <p class="m-0 text-muted">{{ req.userEmail }}</p>
+                  </td>
+                  <td class="text-truncate" style="max-width: 260px;">
+                    {{ req.message }}
+                  </td>
+                  <td>
+                    <span class="badge {{ statusBadgeClass(req.status) }}">{{ req.status }}</span>
+                  </td>
+                  <td>
+                    <span class="text-muted">{{ req.createdAt | date:'dd/MM/yyyy' }}</span>
+                  </td>
+                  <td class="text-end">
+                    <i class="feather icon-chevron-right text-muted"></i>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </app-card>
+  </div>
+</div>

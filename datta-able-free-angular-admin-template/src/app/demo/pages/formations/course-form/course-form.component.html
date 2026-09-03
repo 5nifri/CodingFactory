@@ -1,0 +1,243 @@
+```html
+<div class="row">
+  <div class="col-xl-8">
+    <app-card
+      [cardTitle]="isEditMode ? 'Modifier le cours' : 'Nouveau cours'"
+      [options]="false">
+
+      @if (loadingExisting()) {
+        <p class="text-center">Chargement...</p>
+      } @else {
+
+        @if (submitError()) {
+          <div class="alert alert-danger">
+            {{ submitError() }}
+          </div>
+        }
+
+        <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+
+          <!-- Titre -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Titre <span class="text-danger">*</span>
+            </label>
+
+            <input
+              type="text"
+              class="form-control"
+              #titleRef="ngModel"
+              [ngModel]="model().title"
+              (ngModelChange)="updateField('title', $event)"
+              name="title"
+              required
+              [class.is-invalid]="
+                titleRef.invalid &&
+                (titleRef.dirty ||
+                 titleRef.touched ||
+                 submitAttempted())
+              "
+              placeholder="ex: Introduction aux composants Angular">
+
+            <div class="invalid-feedback">
+              Le titre du cours est requis.
+            </div>
+          </div>
+
+
+          <!-- Description -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Description
+              <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+
+            <textarea
+              class="form-control"
+              rows="3"
+              [ngModel]="model().description"
+              (ngModelChange)="updateField('description', $event)"
+              name="description"
+              placeholder="Résumé du contenu de ce cours...">
+            </textarea>
+
+            <small class="form-text text-muted">
+              Bref résumé visible dans la liste des cours.
+            </small>
+          </div>
+
+
+          <!-- Durée -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Durée
+              <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+
+            <div class="row">
+
+              <!-- Heures -->
+              <div class="col-md-6">
+                <div class="input-group">
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    min="0"
+                    max="999"
+                    [ngModel]="durationHours()"
+                    (ngModelChange)="
+                      durationHours.set(
+                        $event === '' ? 0 : +$event
+                      )
+                    "
+                    name="durationHours"
+                    placeholder="0">
+
+                  <span class="input-group-text">
+                    heures
+                  </span>
+
+                </div>
+              </div>
+
+
+              <!-- Minutes -->
+              <div class="col-md-6">
+                <div class="input-group">
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    min="0"
+                    max="59"
+                    [ngModel]="durationMinutes()"
+                    (ngModelChange)="
+                      durationMinutes.set(
+                        $event === '' ? 0 : +$event
+                      )
+                    "
+                    name="durationMinutes"
+                    placeholder="0">
+
+                  <span class="input-group-text">
+                    minutes
+                  </span>
+
+                </div>
+              </div>
+
+            </div>
+
+            <small class="form-text text-muted">
+              Exemple : 4 heures et 40 minutes.
+            </small>
+          </div>
+
+
+          <!-- Vidéo -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Vidéo
+              <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+
+            <input
+              type="text"
+              class="form-control mb-2"
+              [ngModel]="model().videoUrl"
+              (ngModelChange)="updateField('videoUrl', $event)"
+              name="videoUrl"
+              placeholder="URL de la vidéo (YouTube, Vimeo, lien direct...)">
+
+            <input
+              type="file"
+              class="form-control"
+              accept=".mp4,.webm,.mov,.avi,.mkv"
+              (change)="onVideoFileSelected($event)">
+
+            @if (uploadingVideo()) {
+              <small class="form-text text-muted d-block mt-1">
+                Envoi de la vidéo en cours...
+              </small>
+            }
+
+            <small class="form-text text-muted">
+              Formats acceptés : MP4, WEBM, MOV, AVI, MKV.
+            </small>
+          </div>
+
+
+          <!-- Support -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Support (PDF)
+              <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+
+            <input
+              type="text"
+              class="form-control mb-2"
+              [ngModel]="model().materialUrl"
+              (ngModelChange)="updateField('materialUrl', $event)"
+              name="materialUrl"
+              placeholder="URL du support ou uploader un fichier ci-dessous">
+
+            <input
+              type="file"
+              class="form-control"
+              accept=".pdf"
+              (change)="onMaterialFileSelected($event)">
+
+            @if (uploadingMaterial()) {
+              <small class="form-text text-muted d-block mt-1">
+                Envoi du support en cours...
+              </small>
+            }
+
+            <small class="form-text text-muted">
+              Format accepté : PDF uniquement.
+            </small>
+          </div>
+
+
+          <!-- Boutons -->
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="
+              submitting() ||
+              uploadingVideo() ||
+              uploadingMaterial()
+            ">
+
+            {{
+              submitting()
+                ? 'Enregistrement...'
+                : (
+                  isEditMode
+                    ? 'Enregistrer les modifications'
+                    : 'Créer le cours'
+                )
+            }}
+
+          </button>
+
+          <a
+            [routerLink]="[
+              '/formations',
+              formationId,
+              'courses'
+            ]"
+            class="btn btn-outline-secondary ms-2">
+
+            Annuler
+
+          </a>
+
+        </form>
+      }
+    </app-card>
+  </div>
+</div>
+```

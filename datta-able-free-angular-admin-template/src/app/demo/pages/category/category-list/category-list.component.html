@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-xl-12">
+    <app-card cardTitle="Catégories" [options]="false" blockClass="table-border-style">
+
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <input type="search" class="form-control" style="min-width: 260px;"
+               [formControl]="searchControl" placeholder="Rechercher une catégorie...">
+        <a [routerLink]="['/categories/new']" class="btn btn-primary">
+          <i class="feather icon-plus me-1"></i> Nouvelle catégorie
+        </a>
+      </div>
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+      } @else if (filteredCategories().length === 0) {
+        <p class="text-center text-muted">
+          {{ searchTerm() ? 'Aucune catégorie ne correspond à votre recherche.' : 'Aucune catégorie pour le moment.' }}
+        </p>
+      } @else {
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Description</th>
+              <th class="text-end">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+              @for (category of filteredCategories(); track category.id) {
+                <tr style="cursor: pointer;" [routerLink]="['/categories', category.id]">
+                  <td><h6 class="mb-0">{{ category.name }}</h6></td>
+                  <td class="text-truncate" style="max-width: 400px">{{ category.description }}</td>
+                  <td class="text-end" (click)="$event.stopPropagation()">
+                    <a [routerLink]="['/categories', category.id]" class="btn btn-sm btn-outline-info me-1" title="Voir">
+                      <i class="feather icon-eye"></i>
+                    </a>
+                    <a [routerLink]="['/categories', category.id, 'edit']" class="btn btn-sm btn-outline-primary me-2">
+                      Modifier
+                    </a>
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-danger"
+                      [disabled]="deletingId() === category.id"
+                      (click)="onDelete(category)">
+                      {{ deletingId() === category.id ? '...' : 'Supprimer' }}
+                    </button>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+
+    </app-card>
+  </div>
+</div>

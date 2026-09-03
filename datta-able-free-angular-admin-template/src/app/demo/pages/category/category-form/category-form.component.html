@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-xl-8">
+    <app-card [cardTitle]="isEditMode ? 'Modifier la catégorie' : 'Nouvelle catégorie'" [options]="false">
+
+      @if (loadingExisting()) {
+        <p class="text-center">Chargement...</p>
+      } @else {
+
+        @if (submitError()) {
+          <div class="alert alert-danger">{{ submitError() }}</div>
+        }
+
+        <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+          <!-- Nom -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Nom <span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control"
+                   #nameRef="ngModel"
+                   [ngModel]="model().name" (ngModelChange)="updateField('name', $event)"
+                   name="name" required
+                   [class.is-invalid]="nameRef.invalid && (nameRef.dirty || nameRef.touched || submitAttempted())"
+                   placeholder="ex: Développement Web">
+            <div class="invalid-feedback">Le nom de la catégorie est requis.</div>
+            <small class="form-text text-muted">Ce nom sera visible par les étudiants dans les filtres du catalogue.</small>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Description <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+            <textarea class="form-control" rows="4"
+                      [ngModel]="model().description" (ngModelChange)="updateField('description', $event)"
+                      name="description"
+                      placeholder="Description de la catégorie..."></textarea>
+            <small class="form-text text-muted">Une courte description aide les administrateurs à identifier la catégorie.</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+            {{ submitting() ? 'Enregistrement...' : (isEditMode ? 'Enregistrer les modifications' : 'Créer la catégorie') }}
+          </button>
+          <a [routerLink]="['/categories']" class="btn btn-outline-secondary ms-2">Annuler</a>
+        </form>
+
+      }
+    </app-card>
+  </div>
+</div>

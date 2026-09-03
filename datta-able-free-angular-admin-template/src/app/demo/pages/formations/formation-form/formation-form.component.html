@@ -1,0 +1,147 @@
+<div class="row">
+  <div class="col-xl-8">
+    <app-card [cardTitle]="isEditMode ? 'Modifier la formation' : 'Nouvelle formation'" [options]="false">
+
+      @if (loadingExisting()) {
+        <p class="text-center">Chargement...</p>
+      } @else {
+
+        @if (submitError()) {
+          <div class="alert alert-danger">{{ submitError() }}</div>
+        }
+
+        <form (ngSubmit)="onSubmit()" class="needs-validation" novalidate>
+          <!-- Titre -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Titre <span class="text-danger">*</span>
+            </label>
+            <input type="text" class="form-control"
+                   #titleRef="ngModel"
+                   [ngModel]="model().title" (ngModelChange)="updateField('title', $event)"
+                   name="title" required
+                   [class.is-invalid]="titleRef.invalid && (titleRef.dirty || titleRef.touched || submitAttempted())"
+                   placeholder="ex: Formation Angular Avancé">
+            <div class="invalid-feedback">Le titre est requis.</div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Description <span class="text-danger">*</span>
+            </label>
+            <textarea class="form-control" rows="4"
+                      #descRef="ngModel"
+                      [ngModel]="model().description" (ngModelChange)="updateField('description', $event)"
+                      name="description" required
+                      [class.is-invalid]="descRef.invalid && (descRef.dirty || descRef.touched || submitAttempted())"
+                      placeholder="Décrivez le contenu et les objectifs de la formation..."></textarea>
+            <div class="invalid-feedback">La description est requise.</div>
+            <small class="form-text text-muted">Ce texte sera affiché dans le catalogue public.</small>
+          </div>
+
+          <div class="row">
+            <!-- Durée -->
+            <div class="col-md-4 form-group mb-3">
+              <label class="form-label">
+                Durée <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control"
+                     #durRef="ngModel"
+                     placeholder="ex: 40 heures"
+                     [ngModel]="model().duration" (ngModelChange)="updateField('duration', $event)"
+                     name="duration" required
+                     [class.is-invalid]="durRef.invalid && (durRef.dirty || durRef.touched || submitAttempted())">
+              <div class="invalid-feedback">La durée est requise.</div>
+            </div>
+
+            <!-- Prix -->
+            <div class="col-md-4 form-group mb-3">
+              <label class="form-label">
+                Prix (TND) <span class="text-danger">*</span>
+              </label>
+              <input type="number" class="form-control" min="0" step="0.01"
+                     #priceRef="ngModel"
+                     [ngModel]="model().price" (ngModelChange)="updateField('price', $event)"
+                     name="price" required
+                     [class.is-invalid]="(priceRef.invalid || model().price < 0) && (priceRef.dirty || priceRef.touched || submitAttempted())">
+              <div class="invalid-feedback">Le prix est requis et doit être positif.</div>
+            </div>
+
+            <!-- Catégorie -->
+            <div class="col-md-4 form-group mb-3">
+              <label class="form-label">
+                Catégorie <span class="text-danger">*</span>
+              </label>
+              <select class="form-control"
+                      #catRef="ngModel"
+                      [ngModel]="model().categoryId" (ngModelChange)="updateField('categoryId', +$event)"
+                      name="categoryId" required
+                      [class.is-invalid]="(model().categoryId === 0) && (catRef.dirty || catRef.touched || submitAttempted())">
+                <option [ngValue]="0" disabled>Choisir une catégorie...</option>
+                @for (category of categories(); track category.id) {
+                  <option [ngValue]="category.id">{{ category.name }}</option>
+                }
+              </select>
+              <div class="invalid-feedback">Veuillez sélectionner une catégorie.</div>
+            </div>
+          </div>
+
+          <!-- Image -->
+          <div class="form-group mb-3">
+            <label class="form-label">
+              Image de la formation <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+
+            <div class="d-flex align-items-start gap-3">
+              @if (imagePreviewUrl()) {
+                <img [src]="imagePreviewUrl()" alt="Aperçu"
+                     class="rounded border"
+                     style="width: 120px; height: 90px; object-fit: cover;">
+              }
+
+              <div class="flex-grow-1">
+                <input type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp"
+                       (change)="onImageSelected($event)" [disabled]="uploading()">
+
+                @if (uploading()) {
+                  <small class="form-text text-muted d-block mt-1">Envoi en cours...</small>
+                }
+
+                @if (uploadError()) {
+                  <small class="text-danger d-block mt-1">{{ uploadError() }}</small>
+                }
+
+                <details class="mt-2">
+                  <summary class="text-muted small" style="cursor: pointer;">
+                    Ou coller une URL d'image manuellement
+                  </summary>
+                  <input type="text" class="form-control mt-2"
+                         [ngModel]="model().imageUrl" (ngModelChange)="updateField('imageUrl', $event)"
+                         name="imageUrl" placeholder="https://...">
+                </details>
+                <small class="form-text text-muted">Formats acceptés : JPG, JPEG, PNG, WEBP.</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Publiée -->
+          <div class="form-group form-check mb-4">
+            <input class="form-check-input" type="checkbox" id="published"
+                   [ngModel]="model().published" (ngModelChange)="updateField('published', $event)"
+                   name="published">
+            <label class="form-check-label" for="published">
+              Publiée (visible pour les étudiants) <span class="text-muted fw-normal">— optionnel</span>
+            </label>
+            <small class="form-text text-muted d-block">Si non cochée, la formation reste en brouillon.</small>
+          </div>
+
+          <button type="submit" class="btn btn-primary" [disabled]="submitting() || uploading()">
+            {{ submitting() ? 'Enregistrement...' : (isEditMode ? 'Enregistrer les modifications' : 'Créer la formation') }}
+          </button>
+          <a routerLink="/formations" class="btn btn-outline-secondary ms-2">Annuler</a>
+        </form>
+      }
+    </app-card>
+  </div>
+</div>

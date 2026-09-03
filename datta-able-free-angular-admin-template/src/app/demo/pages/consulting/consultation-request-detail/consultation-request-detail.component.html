@@ -1,0 +1,88 @@
+<div class="row">
+  <div class="col-xl-8">
+    <app-card cardTitle="Détail de la demande" [options]="false">
+
+      @if (loading()) {
+        <p class="text-center">Chargement...</p>
+      } @else if (error()) {
+        <div class="alert alert-danger">{{ error() }}</div>
+        <button class="btn btn-outline-secondary btn-sm mb-3" (click)="goBack()">
+          <i class="feather icon-arrow-left"></i> Retour
+        </button>
+      } @else if (request()) {
+        <div class="mb-4">
+          <button class="btn btn-outline-secondary btn-sm mb-3" (click)="goBack()">
+            <i class="feather icon-arrow-left"></i> Retour
+          </button>
+
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="mb-1">{{ request()!.userFullName }}</h5>
+              <p class="text-muted mb-0">
+                <i class="feather icon-mail"></i> {{ request()!.userEmail }}
+              </p>
+            </div>
+            <span class="badge {{ statusBadgeClass(request()!.status) }} f-14">
+              {{ request()!.status }}
+            </span>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <label class="text-muted small text-uppercase">Offre concernée</label>
+            <p class="fw-bold mb-0">{{ request()!.consultingTitle }}</p>
+          </div>
+          <div class="col-md-6">
+            <label class="text-muted small text-uppercase">Date de la demande</label>
+            <p class="mb-0">{{ request()!.createdAt | date:'dd/MM/yyyy à HH:mm' }}</p>
+          </div>
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="text-muted small text-uppercase">Message du demandeur</label>
+          <div class="p-3 bg-light rounded border">
+            <p class="mb-0" style="white-space: pre-wrap;">{{ request()!.message }}</p>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex flex-wrap gap-2">
+          @for (action of availableActions(request()!.status); track action.status) {
+            <button class="btn {{ action.btnClass }}" [disabled]="updating()" (click)="updateStatus(action.status)">
+              {{ updating() ? 'Traitement...' : action.label }}
+            </button>
+          }
+        </div>
+      }
+
+    </app-card>
+  </div>
+
+  <!-- Sidebar info -->
+  @if (request()) {
+    <div class="col-xl-4">
+      <app-card cardTitle="Informations" [options]="false">
+        <ul class="list-unstyled mb-0">
+          <li class="mb-2">
+            <small class="text-muted d-block">ID de la demande</small>
+            <span class="fw-bold">#{{ request()!.id }}</span>
+          </li>
+          <li class="mb-2">
+            <small class="text-muted d-block">Statut actuel</small>
+            <span class="badge {{ statusBadgeClass(request()!.status) }}">{{ request()!.status }}</span>
+          </li>
+          <li class="mb-2">
+            <small class="text-muted d-block">Offre</small>
+            <a [routerLink]="['/consulting', request()!.consultingId]" class="fw-bold text-decoration-none">
+              {{ request()!.consultingTitle }}
+            </a>
+          </li>
+
+        </ul>
+      </app-card>
+    </div>
+  }
+</div>
