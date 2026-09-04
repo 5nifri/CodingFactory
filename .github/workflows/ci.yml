@@ -58,7 +58,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Verify service imports correctly
         working-directory: ml-service
-        run: python -c "import sys; sys.path.insert(0, '.'); from src.main import app; print('OK: FastAPI app loaded')"
+        run: |
+          python -c "from src.main import app; print('ml-service OK')"
 
   docker-build:
     runs-on: ubuntu-latest
