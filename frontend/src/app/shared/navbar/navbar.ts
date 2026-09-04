@@ -12,7 +12,9 @@ import { AuthService } from '../../core/services/auth.service';
 export class Navbar {
   private authService = inject(AuthService);
   isLoggedIn = this.authService.isLoggedIn;
-
+  isStudent(): boolean {
+    return this.authService.isStudent();
+  }
   logout(): void {
     this.authService.logout();
   }

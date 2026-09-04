@@ -1,29 +1,23 @@
-.auth-container {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 80vh;
-	padding: 16px;
+:host {
+  display: block;
+  min-height: 100vh;
 }
 
-.auth-card {
-	width: 100%;
-	max-width: 400px;
-	padding: 8px;
+.contact.section {
+  padding: 40px 0;
+  min-height: calc(100vh - 200px); // Adjust based on header/footer height
 }
 
-.full-width {
-	width: 100%;
-	margin-bottom: 8px;
+.php-email-form {
+  .text-center {
+    &.mt-3 {
+      margin-top: 16px;
+    }
+  }
 }
 
-.switch-link {
-	text-align: center;
-	margin-top: 16px;
-
-	a {
-		color: #3f51b5;
-		text-decoration: none;
-		font-weight: 500;
-	}
+// Make sure the link is visible and well-spaced
+.text-center.mt-3 p {
+  margin-bottom: 0;
+  font-size: 0.95rem;
 }

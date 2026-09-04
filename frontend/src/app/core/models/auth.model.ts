@@ -8,6 +8,7 @@ export interface RegisterRequest {
   lastName: string;
   email: string;
   password: string;
+  interests?: string[];   // <-- add this
 }
 
 export interface AuthResponse {

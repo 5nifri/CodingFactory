@@ -23,6 +23,8 @@ export class ConsultingOfferDetail {
   private requestService = inject(ConsultationRequestService);
   authService = inject(AuthService);
 
+  private readonly baseUrl = 'http://localhost:8080';  // ← backend base URL
+
   private offerId = toSignal(
     this.route.paramMap.pipe(map(params => Number(params.get('id')))),
     { initialValue: 0 }
@@ -42,11 +44,17 @@ export class ConsultingOfferDetail {
   error = computed(() => this.result() === null ? "Impossible de charger cette offre." : null);
   offer = computed(() => this.result() ?? null);
 
+  // Resolve image URL (relative to full URL)
+  imageUrl = computed(() => {
+    const img = this.offer()?.image;
+    if (!img) return null;
+    return img.startsWith('http') ? img : `${this.baseUrl}${img}`;
+  });
+
   message = signal('');
   submitting = signal(false);
   submitError = signal<string | null>(null);
 
-  // existing request for THIS offer by the logged-in user, if any
   private requestTrigger = signal(0);
   existingRequest = signal<ConsultationRequest | null>(null);
   existingRequestChecked = signal(false);
@@ -93,7 +101,7 @@ export class ConsultingOfferDetail {
       next: () => {
         this.submitting.set(false);
         this.message.set('');
-        this.requestTrigger.update(v => v + 1); // refetch so existingRequest picks up the new one
+        this.requestTrigger.update(v => v + 1);
       },
       error: () => {
         this.submitting.set(false);

@@ -10,14 +10,61 @@
     </nav>
   </div>
 </div>
-<!-- Consulting Offers Section -->
-<section id="consulting-services" class="services section">
 
+<section id="consulting-services" class="services section">
   <div class="container section-title" data-aos="fade-up">
     <h2>Nos Offres de Consulting</h2>
     <p>Découvrez nos services d'accompagnement</p>
   </div>
 
+  <!-- ===== FILTER BAR ===== -->
+  <div class="container mb-4" data-aos="fade-up">
+    <div class="row g-3 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label fw-bold small text-uppercase">Rechercher</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Titre, description, catégorie..."
+          [ngModel]="searchTerm()"
+          (ngModelChange)="searchTerm.set($event)"
+        />
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-bold small text-uppercase">Catégorie</label>
+        <select class="form-select" [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)">
+          <option value="">Toutes</option>
+          @for (cat of categories(); track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <label class="form-label fw-bold small text-uppercase">Trier par</label>
+        <select class="form-select" [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event)">
+          <option value="title">Titre</option>
+          <option value="category">Catégorie</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn btn-outline-secondary w-100" (click)="clearFilters()">
+          <i class="bi bi-arrow-counterclockwise"></i> Réinitialiser
+        </button>
+      </div>
+    </div>
+
+    <!-- Result count -->
+    @if (!loading() && !error()) {
+      <div class="mt-2 text-muted small">
+        {{ filteredAndSortedOffers().length }} offre(s) trouvée(s)
+      </div>
+    }
+  </div>
+
+  <!-- ===== LOADING / ERROR / EMPTY ===== -->
   @if (loading()) {
     <div class="container">
       <p class="text-center">Chargement des offres...</p>
@@ -30,72 +77,48 @@
     </div>
   }
 
-  @if (!loading() && !error() && offers().length === 0) {
+  @if (!loading() && !error() && filteredAndSortedOffers().length === 0) {
     <div class="container">
-      <p class="text-center">Aucune offre disponible</p>
+      <p class="text-center">Aucune offre ne correspond à vos critères.</p>
     </div>
   }
 
-  @if (!loading() && !error() && offers().length > 0) {
+  <!-- ===== OFFER CARDS ===== -->
+  @if (!loading() && !error() && filteredAndSortedOffers().length > 0) {
     <div class="container" data-aos="fade-up" data-aos-delay="100">
-
       <div class="row gy-5">
-
-        @for (offer of offers(); track offer.id; let i = $index) {
-
+        @for (offer of filteredAndSortedOffers(); track offer.id; let i = $index) {
           <div
             class="col-xl-4 col-md-6"
             data-aos="zoom-in"
             [attr.data-aos-delay]="200 + (i * 100)"
-
           >
-            <a
-              [routerLink]="['/consulting', offer.id]"
-              class="stretched-link"
-            >
-            <div class="service-item">
-
-              <div class="img" [class.img-fallback]="!offer.image">
-                @if (offer.image) {
-                  <img
-                    [src]="resolveImageUrl(offer.image)"
-                    class="img-fluid"
-                    [alt]="offer.title"
-                  >
-                } @else {
-                  <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
-                }
-
-                @if (offer.category) {
-                  <span class="category-ribbon">{{ offer.category }}</span>
-                }
-              </div>
-
-              <div class="details">
-
-                <div class="icon">
-                  <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
+            <a [routerLink]="['/consulting', offer.id]" class="stretched-link">
+              <div class="service-item">
+                <div class="img" [class.img-fallback]="!offer.image">
+                  @if (offer.image) {
+                    <img [src]="resolveImageUrl(offer.image)" class="img-fluid" [alt]="offer.title">
+                  } @else {
+                    <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
+                  }
+                  @if (offer.category) {
+                    <span class="category-ribbon">{{ offer.category }}</span>
+                  }
                 </div>
-
-
+                <div class="details">
+                  <div class="icon">
+                    <i class="bi" [ngClass]="resolveIcon(offer.icon)"></i>
+                  </div>
                   <h3>{{ offer.title }}</h3>
-
-                <p>{{ offer.description }}</p>
-
+                  <p>{{ offer.description }}</p>
+                </div>
               </div>
-
-            </div>
             </a>
-
           </div>
-
         }
-
       </div>
-
     </div>
   }
-
 </section>
 
 <style>
@@ -127,5 +150,18 @@
     font-weight: 500;
     padding: 4px 38px;
     white-space: nowrap;
+  }
+
+  /* Filter bar improvements */
+  .form-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.25rem;
+  }
+  .form-control, .form-select {
+    border-radius: 0.375rem;
+  }
+  .btn-outline-secondary {
+    border-color: #ced4da;
   }
 </style>

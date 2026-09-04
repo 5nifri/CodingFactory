@@ -30,7 +30,7 @@ export const routes: Routes = [
       { path: 'e-formation/:formationId/courses/:courseId', component: CourseView, canActivate: [studentGuard] },
       { path: 'consulting/:id', component: ConsultingOfferDetail },
       { path: 'mes-demandes', component: MyRequests, canActivate: [authGuard] },
-
+      { path: 'contact', loadComponent: () => import('./contact/contact').then(m => m.Contact) }
     ]
   },
   { path: '**', redirectTo: '' }

@@ -10,10 +10,10 @@
         <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a></li>
         <li><a routerLink="/consulting" routerLinkActive="active">Consulting Hub</a></li>
         <li><a routerLink="/e-formation" routerLinkActive="active">E-Formation Hub</a></li>
-        @if (isLoggedIn()) {
+        @if (isStudent()) {
           <li><a routerLink="/mes-formations" routerLinkActive="active">Mes Formations</a></li>
         }
-        @if (isLoggedIn()) {
+        @if (isStudent()) {
           <li><a routerLink="/mes-demandes" routerLinkActive="active">Mes Demandes</a></li>
         }
         <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>

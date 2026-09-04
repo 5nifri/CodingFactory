@@ -36,17 +36,20 @@
                    [(ngModel)]="password" placeholder="Mot de passe" required>
           </div>
 
-          <div class="text-center">
+          <!-- 👇 Link moved here (before submit button) -->
+          <div class="text-center mt-3">
+            <p class="mb-0">
+              Vous n'avez pas de compte ?
+              <a routerLink="/register">Créer un compte</a>
+            </p>
+          </div>
+
+          <div class="text-center mt-3">
             <button type="submit" [disabled]="loading">
               {{ loading ? 'Connexion...' : 'Se connecter' }}
             </button>
           </div>
         </form>
-
-        <p class="text-center mt-4">
-          Pas encore de compte ?
-          <a routerLink="/register">S'inscrire</a>
-        </p>
 
       </div>
     </div>

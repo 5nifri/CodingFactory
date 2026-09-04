@@ -3,39 +3,52 @@
   <img src="assets/img/hero-bg.jpg" alt="" data-aos="fade-in">
 
   <div class="container d-flex flex-column align-items-center">
-    <h2 data-aos="fade-up" data-aos-delay="100">PLAN. LAUNCH. GROW.</h2>
+    <h2 data-aos="fade-up" data-aos-delay="100">
+      <span class="highlight">Code.</span> <span class="highlight">Consult.</span> <span class="highlight">Grow.</span>
+    </h2>
     <p data-aos="fade-up" data-aos-delay="200">
-      CodingFactory – Consulting informatique & Formation professionnelle
+      CodingFactory – Consulting informatique &amp; Formation professionnelle
     </p>
     <div class="d-flex mt-4" data-aos="fade-up" data-aos-delay="300">
-      <a routerLink="/contact" class="btn-get-started">Get Started</a>
-      <a href="#about" class="btn-watch-video d-flex align-items-center">
-        <i class="bi bi-play-circle"></i><span>Découvrir</span>
+      <a routerLink="/e-formation" class="btn-get-started">Découvrir nos formations</a>
+      <a routerLink="/consulting" class="btn-watch-video d-flex align-items-center">
+        <i class="bi bi-play-circle"></i><span>Nos services consulting</span>
       </a>
     </div>
   </div>
 </section>
 
-<!-- About Section (temporaire) -->
+<!-- About Section -->
 <section id="about" class="about section">
   <div class="container">
-    <div class="row gy-4">
-      <div class="col-lg-6">
+    <div class="row gy-4 align-items-center">
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="100">
         <h3>À propos de CodingFactory</h3>
         <p>
-          Nous sommes une société spécialisée dans le consulting informatique et la formation professionnelle.
-          Notre mission est d’accompagner les entreprises et les talents dans leur transformation digitale.
+          Nous sommes une société spécialisée dans le <strong>consulting informatique</strong>
+          et la <strong>formation professionnelle</strong>. Notre mission est d’accompagner
+          les entreprises et les talents dans leur transformation digitale.
         </p>
         <p>
-          Deux pôles principaux :
+          Deux pôles complémentaires :
         </p>
-        <ul>
-          <li><i class="bi bi-check-circle-fill"></i> <span><strong>Consulting Hub</strong> – Expertise et accompagnement</span></li>
-          <li><i class="bi bi-check-circle-fill"></i> <span><strong>E-Formation Hub</strong> – Formations en ligne et présentiel</span></li>
+        <ul class="list-unstyled">
+          <li class="d-flex align-items-start mb-2">
+            <i class="bi bi-check-circle-fill text-primary me-2" style="font-size: 1.2rem;"></i>
+            <span><strong>Consulting Hub</strong> – Expertise, audit et accompagnement stratégique</span>
+          </li>
+          <li class="d-flex align-items-start mb-2">
+            <i class="bi bi-check-circle-fill text-success me-2" style="font-size: 1.2rem;"></i>
+            <span><strong>E-Formation Hub</strong> – Formations en ligne et présentiel sur mesure</span>
+          </li>
         </ul>
+        <div class="mt-4">
+          <a routerLink="/e-formation" class="btn btn-outline-primary me-2">Explorer les formations</a>
+          <a routerLink="/consulting" class="btn btn-outline-secondary">Découvrir le consulting</a>
+        </div>
       </div>
-      <div class="col-lg-6">
-        <img src="assets/img/about.jpg" class="img-fluid rounded-4" alt="About CodingFactory">
+      <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
+        <img src="assets/img/about.jpg" class="img-fluid rounded-4 shadow" alt="À propos de CodingFactory">
       </div>
     </div>
   </div>
@@ -93,8 +106,8 @@
 <!-- Services Section -->
 <section id="services" class="services section">
   <div class="container section-title" data-aos="fade-up">
-    <h2>Services</h2>
-    <p>Nos expertises principales</p>
+    <h2>Nos Services</h2>
+    <p>Deux pôles d’excellence pour votre réussite</p>
   </div>
 
   <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -103,16 +116,16 @@
       <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="200">
         <div class="service-item">
           <div class="img">
-            <img src="assets/img/services-1.jpg" class="img-fluid" alt="">
+            <img src="assets/img/services-1.jpg" class="img-fluid" alt="Consulting Hub">
           </div>
           <div class="details position-relative">
             <div class="icon">
-              <i class="bi bi-activity"></i>
+              <i class="bi bi-briefcase"></i>
             </div>
             <a routerLink="/consulting" class="stretched-link">
               <h3>Consulting Hub</h3>
             </a>
-            <p>Accompagnement stratégique, audit et transformation digitale pour les entreprises.</p>
+            <p>Accompagnement stratégique, audit, transformation digitale et conseil en management.</p>
           </div>
         </div>
       </div>
@@ -120,16 +133,16 @@
       <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="300">
         <div class="service-item">
           <div class="img">
-            <img src="assets/img/services-2.jpg" class="img-fluid" alt="">
+            <img src="assets/img/services-2.jpg" class="img-fluid" alt="E-Formation Hub">
           </div>
           <div class="details position-relative">
             <div class="icon">
-              <i class="bi bi-broadcast"></i>
+              <i class="bi bi-mortarboard"></i>
             </div>
             <a routerLink="/e-formation" class="stretched-link">
               <h3>E-Formation Hub</h3>
             </a>
-            <p>Formations professionnelles en ligne et en présentiel, adaptées aux besoins du marché.</p>
+            <p>Formations professionnelles en ligne et en présentiel, certifiantes et adaptées au marché.</p>
           </div>
         </div>
       </div>
@@ -137,20 +150,29 @@
       <div class="col-xl-4 col-md-6" data-aos="zoom-in" data-aos-delay="400">
         <div class="service-item">
           <div class="img">
-            <img src="assets/img/services-3.jpg" class="img-fluid" alt="">
+            <img src="assets/img/services-3.jpg" class="img-fluid" alt="Solutions sur mesure">
           </div>
           <div class="details position-relative">
             <div class="icon">
-              <i class="bi bi-easel"></i>
+              <i class="bi bi-gear"></i>
             </div>
-            <a href="#" class="stretched-link">
+            <a routerLink="/contact" class="stretched-link">
               <h3>Solutions sur mesure</h3>
             </a>
-            <p>Développement d’applications, accompagnement technique et support continu.</p>
+            <p>Développement d’applications, accompagnement technique, support et maintenance.</p>
           </div>
         </div>
       </div>
 
     </div>
+  </div>
+</section>
+
+<!-- Call to Action (optional) -->
+<section class="cta section dark-background" style="background: linear-gradient(135deg, #0d6efd, #6610f2);">
+  <div class="container text-center" data-aos="fade-up">
+    <h3>Prêt à transformer votre organisation ?</h3>
+    <p class="lead">Contactez‑nous dès aujourd’hui pour un premier échange sans engagement.</p>
+    <a routerLink="/contact" class="btn btn-light btn-lg mt-3">Nous contacter</a>
   </div>
 </section>

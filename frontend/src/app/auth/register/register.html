@@ -24,6 +24,9 @@
         @if (error) {
           <div class="alert alert-danger">{{ error }}</div>
         }
+        @if (success) {
+          <div class="alert alert-success">{{ success }}</div>
+        }
 
         <form (ngSubmit)="onSubmit()" class="php-email-form">
           <div class="row gy-3">
@@ -42,6 +45,33 @@
             <div class="col-12">
               <input class="form-control" type="password" name="password"
                      [(ngModel)]="password" placeholder="Mot de passe" required minlength="6">
+            </div>
+
+            <!-- Interests -->
+            <div class="col-12">
+              <label class="form-label">Centres d'intérêt</label>
+              <small class="text-muted d-block mb-2">
+                Sélectionnez les domaines qui vous intéressent (au moins un)
+              </small>
+              <div class="row">
+                @for (option of availableOptions(); track option.interestFlag) {
+                  <div class="col-md-4 col-6">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        [id]="option.interestFlag"
+                        [value]="option.interestFlag"
+                        [checked]="isInterestSelected(option.interestFlag)"
+                        (change)="toggleInterest(option.interestFlag, $event)"
+                      />
+                      <label class="form-check-label" [for]="option.interestFlag">
+                        {{ option.name }}
+                      </label>
+                    </div>
+                  </div>
+                }
+              </div>
             </div>
           </div>
 
