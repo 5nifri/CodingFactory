@@ -10,6 +10,6 @@ RUN npm run build
 
 # --- Étape 2 : servir avec Nginx ---
 FROM nginx:alpine
-COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+COPY --from=build /app/dist/browser /usr/share/nginx/html
 
 EXPOSE 80
